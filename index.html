@@ -4,81 +4,214 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1A1A1A">
+  <meta name="theme-color" content="#181a20">
   <title>Daily Checklist</title>
-  
-  <!-- External Dependencies -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
-
   <style>
+    /* Root color variables for dark and light themes */
+    :root {
+      --primary-bg: #181a20;
+      --secondary-bg: #232634;
+      --text-main: #e5e7eb;
+      --text-fade: #b9bcc6;
+      --accent: #7c3aed;
+      --accent-light: #a5b4fc;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --card-bg: #232634;
+      --input-bg: #232634;
+      --input-border: #303544;
+      --category-Work: #7c3aed;
+      --category-Personal: #2563eb;
+      --category-Health: #10b981;
+      --gradient-bg: linear-gradient(135deg, #7c3aed, #2563eb);
+    }
+    body.light-mode {
+      --primary-bg: #f4f6fb;
+      --secondary-bg: #e0e7ef;
+      --text-main: #232634;
+      --text-fade: #4181c4;
+      --accent: #6d28d9;
+      --accent-light: #d1c3fa;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --card-bg: #fff;
+      --input-bg: #fff;
+      --input-border: #c7d8eb;
+      --category-Work: #6d28d9;
+      --category-Personal: #2563eb;
+      --category-Health: #10b981;
+      --gradient-bg: linear-gradient(135deg, #d1c3fa 0%, #a7c7ee 100%);
+    }
+    html, body {
+      background: var(--primary-bg);
+      color: var(--text-main);
+      transition: background 0.3s, color 0.3s;
+      min-height: 100%;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+    .gradient-bg { background: var(--gradient-bg); transition: background 0.3s; }
+    .gradient-button { background: var(--gradient-bg); border: none; transition: background 0.3s; }
+    .input-field {
+      background: var(--input-bg);
+      color: var(--text-main);
+      border: 1px solid var(--input-border);
+      transition: background 0.3s, color 0.3s, border 0.3s;
+    }
+    .input-field:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-light);
+    }
+    .card {
+      background: var(--card-bg);
+      color: var(--text-main);
+      transition: background 0.3s, color 0.3s;
+    }
+    /* Task categories */
+    .category-Work {
+      background-color: var(--category-Work) !important;
+      color: #fff;
+    }
+    .category-Personal {
+      background-color: var(--category-Personal) !important;
+      color: #fff;
+    }
+    .category-Health {
+      background-color: var(--category-Health) !important;
+      color: #fff;
+    }
+    .default-task-badge {
+      background-color: var(--warning);
+      color: #fff;
+      padding: 0.125rem 0.375rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+    }
+    /* Theme transition for all panels, inputs, modals, etc */
+    .transition-theme {
+      transition: background .3s, color .3s, border-color .3s, box-shadow .3s;
+    }
+    /* Modals */
+    .modal-panel {
+      background: var(--card-bg);
+      color: var(--text-main);
+      transition: background .3s, color .3s;
+    }
+    .modal-button {
+      font-weight: 500;
+      background: var(--input-bg);
+      color: var(--text-main);
+      border: 1px solid var(--input-border);
+      transition: background .3s, color .3s, border .3s;
+    }
+    .modal-button:hover {
+      background: var(--secondary-bg);
+    }
+    /* Check animation */
     @keyframes checkmark {
       0% { transform: scale(0); }
       50% { transform: scale(1.2); }
       100% { transform: scale(1); }
     }
-    
     .checkmark { animation: checkmark 0.3s ease-in-out; }
-    .gradient-bg { background: linear-gradient(135deg, #6D28D9, #1E3A8A); }
-    .gradient-button { background: linear-gradient(135deg, #6D28D9, #1E3A8A); }
-    .category-Work { background-color: #6D28D9; }
-    .category-Personal { background-color: #1E3A8A; }
-    .category-Health { background-color: #10B981; }
-    
     /* Mobile-first media queries */
     @media (max-width: 640px) {
       .task-item-content { flex-direction: column; align-items: flex-start; }
       .task-meta { flex-direction: column; gap: 0.5rem; }
     }
+    /* Light mode tweaks for Tailwind utility classes overrides */
+    body.light-mode .bg-gray-800, .bg-gray-800.light-reverse {
+      background: var(--card-bg) !important;
+      color: var(--text-main) !important;
+    }
+    body.light-mode .text-gray-400, .text-gray-400.light-reverse {
+      color: var(--text-fade) !important;
+    }
+    body.light-mode .border-gray-700 {
+      border-color: var(--input-border) !important;
+    }
+    body.light-mode .bg-amber-500 {
+      background-color: var(--warning) !important;
+      color: #fff !important;
+    }
+    body.light-mode .hover\:bg-amber-600:hover {
+      background-color: #f8b420 !important;
+    }
+    body.light-mode .bg-red-500 {
+      background-color: var(--danger) !important;
+      color: #fff !important;
+    }
+    body.light-mode .hover\:bg-red-600:hover {
+      background-color: #fd7061 !important;
+    }
   </style>
 </head>
+<body class="min-h-screen text-white transition-theme">
 
-<body class="bg-gradient-to-r from-gray-900 to-gray-800 min-h-screen text-white">
   <div class="container mx-auto p-4 max-w-2xl">
     <!-- Header -->
-    <header class="flex flex-col md:flex-row justify-between items-center mb-4 md:mb-8 gradient-bg p-4 md:p-6 rounded-lg shadow-lg">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-4 md:mb-8 gradient-bg p-4 md:p-6 rounded-lg shadow-lg transition-theme">
       <h1 class="text-2xl md:text-3xl font-bold mb-2 md:mb-0">Daily Checklist</h1>
-      <button id="themeToggle" class="p-2 text-gray-200 hover:text-white transition-all">
+      <button id="themeToggle" class="p-2 transition-theme" title="Toggle theme" aria-label="Toggle theme">
         <i class="fas fa-moon text-lg md:text-xl"></i>
       </button>
     </header>
 
     <!-- Stats Section -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6 text-center">
-      <div class="bg-gray-800 p-3 md:p-4 rounded-lg">
-        <p class="text-sm md:text-base text-gray-400">Completed</p>
+      <div class="bg-gray-800 card p-3 md:p-4 rounded-lg transition-theme">
+        <p class="text-sm md:text-base text-gray-400 light-reverse">Completed</p>
         <p id="completedCount" class="text-xl md:text-2xl font-bold">0</p>
       </div>
-      <div class="bg-gray-800 p-3 md:p-4 rounded-lg">
-        <p class="text-sm md:text-base text-gray-400">Streak</p>
+      <div class="bg-gray-800 card p-3 md:p-4 rounded-lg transition-theme">
+        <p class="text-sm md:text-base text-gray-400 light-reverse">Streak</p>
         <p id="streakCount" class="text-xl md:text-2xl font-bold">0 🔥</p>
       </div>
-      <div class="bg-gray-800 p-3 md:p-4 rounded-lg">
-        <p class="text-sm md:text-base text-gray-400">Points</p>
+      <div class="bg-gray-800 card p-3 md:p-4 rounded-lg transition-theme">
+        <p class="text-sm md:text-base text-gray-400 light-reverse">Points</p>
         <p id="pointsCount" class="text-xl md:text-2xl font-bold">0 ⭐</p>
       </div>
     </div>
 
     <!-- Task Input -->
     <div class="flex flex-col space-y-2 mb-4 md:mb-6">
-      <input id="taskInput" type="text" placeholder="Add a new task" 
-             class="p-2 md:p-3 text-sm md:text-base bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+      <input id="taskInput" type="text" placeholder="Add a new task"
+             class="p-2 md:p-3 text-sm md:text-base input-field rounded-lg transition-theme"/>
       <div class="flex flex-col md:flex-row gap-2">
-        <select id="categoryInput" class="flex-1 p-2 md:p-3 text-sm md:text-base bg-gray-800 border border-gray-700 rounded-lg">
+        <select id="categoryInput" class="flex-1 p-2 md:p-3 text-sm md:text-base input-field rounded-lg transition-theme">
           <option value="Work">Work</option>
           <option value="Personal">Personal</option>
           <option value="Health">Health</option>
         </select>
-        <input id="dueDateInput" type="date" 
-               class="flex-1 p-2 md:p-3 text-sm md:text-base bg-gray-800 border border-gray-700 rounded-lg">
+        <input id="dueDateInput" type="date"
+               class="flex-1 p-2 md:p-3 text-sm md:text-base input-field rounded-lg transition-theme"/>
       </div>
       <div class="flex flex-col md:flex-row gap-2">
-        <button id="addTask" class="gradient-button text-white p-2 md:p-3 text-sm md:text-base rounded-lg flex-1">
+        <div class="flex items-center mb-2 md:mb-0">
+          <input id="defaultTaskCheckbox" type="checkbox" class="mr-2 w-4 h-4 accent-purple-600"/>
+          <label for="defaultTaskCheckbox" class="text-sm md:text-base">Make Default Daily Task</label>
+        </div>
+      </div>
+      <div class="flex flex-col md:flex-row gap-2">
+        <button id="addTask" class="gradient-button text-white p-2 md:p-3 text-sm md:text-base rounded-lg flex-1 transition-theme">
           <i class="fas fa-plus"></i> Add Task
         </button>
-        <button id="clearAll" class="bg-red-500 hover:bg-red-600 text-white p-2 md:p-3 text-sm md:text-base rounded-lg flex-1">
+        <button id="manageDefaults" class="bg-amber-500 hover:bg-amber-600 text-white p-2 md:p-3 text-sm md:text-base rounded-lg flex-1 transition-theme">
+          <i class="fas fa-cog"></i> Manage Defaults
+        </button>
+      </div>
+      <div class="flex flex-col md:flex-row gap-2">
+        <button id="clearAll" class="bg-red-500 hover:bg-red-600 text-white p-2 md:p-3 text-sm md:text-base rounded-lg flex-1 transition-theme">
           <i class="fas fa-trash-alt"></i> Clear All
         </button>
       </div>
@@ -86,51 +219,475 @@
 
     <!-- Task List -->
     <ul id="taskList" class="space-y-2 md:space-y-3 mb-4 md:mb-6"></ul>
-
     <!-- Achievements -->
     <div id="achievements" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
   </div>
 
   <!-- Modals -->
   <div id="confirmationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-    <div class="bg-gray-800 p-4 md:p-6 rounded-lg w-full max-w-sm">
+    <div class="modal-panel p-4 md:p-6 rounded-lg w-full max-w-sm transition-theme">
       <p class="text-base md:text-lg mb-3 md:mb-4">Are you sure you want to delete all tasks?</p>
       <div class="flex gap-2">
-        <button id="confirmDelete" class="bg-red-500 hover:bg-red-600 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg flex-1">Delete</button>
-        <button id="cancelDelete" class="bg-gray-700 hover:bg-gray-600 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg flex-1">Cancel</button>
+        <button id="confirmDelete" class="modal-button bg-red-500 hover:bg-red-600 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg flex-1 transition-theme">Delete</button>
+        <button id="cancelDelete" class="modal-button bg-gray-700 hover:bg-gray-600 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg flex-1 transition-theme">Cancel</button>
       </div>
+    </div>
+  </div>
+  <!-- Default Tasks Management Modal -->
+  <div id="defaultTasksModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div class="modal-panel p-4 md:p-6 rounded-lg w-full max-w-lg transition-theme">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg md:text-xl font-bold">Manage Default Tasks</h2>
+        <button id="closeDefaultsModal" class="text-gray-400 hover:text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p class="text-base mb-4">These tasks will be automatically added at the start of each day.</p>
+      <ul id="defaultTasksList" class="space-y-2 max-h-60 overflow-y-auto mb-4"></ul>
+      <button id="closeDefaultsModalBtn" class="w-full bg-gray-700 hover:bg-gray-600 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg transition-theme">Close</button>
     </div>
   </div>
 
   <script>
-    // [Previous JavaScript remains largely the same with these mobile-specific adjustments]
-    
+    // --- State Management and Application Logic (same as your original, updated for theme) ---
+    let state = {
+      tasks: JSON.parse(localStorage.getItem('tasks')) || [],
+      defaultTasks: JSON.parse(localStorage.getItem('defaultTasks')) || [],
+      points: parseInt(localStorage.getItem('points')) || 0,
+      streak: parseInt(localStorage.getItem('streak')) || 0,
+      lastCompleted: localStorage.getItem('lastCompleted') || null,
+      lastTaskCheck: localStorage.getItem('lastTaskCheck') || null,
+      achievements: JSON.parse(localStorage.getItem('achievements')) || [
+        { id: 1, title: 'First Task', unlocked: false },
+        { id: 2, title: '5 Tasks', unlocked: false },
+        { id: 3, title: '10 Tasks', unlocked: false },
+        { id: 4, title: 'First Default Task', unlocked: false },
+        { id: 5, title: '5 Default Tasks', unlocked: false }
+      ]
+    };
+
+    const elements = {
+      taskInput: document.getElementById('taskInput'),
+      taskList: document.getElementById('taskList'),
+      addTask: document.getElementById('addTask'),
+      clearAll: document.getElementById('clearAll'),
+      confirmDelete: document.getElementById('confirmDelete'),
+      cancelDelete: document.getElementById('cancelDelete'),
+      themeToggle: document.getElementById('themeToggle'),
+      confirmationModal: document.getElementById('confirmationModal'),
+      completedCount: document.getElementById('completedCount'),
+      streakCount: document.getElementById('streakCount'),
+      pointsCount: document.getElementById('pointsCount'),
+      achievements: document.getElementById('achievements'),
+      categoryInput: document.getElementById('categoryInput'),
+      dueDateInput: document.getElementById('dueDateInput'),
+      defaultTaskCheckbox: document.getElementById('defaultTaskCheckbox'),
+      manageDefaults: document.getElementById('manageDefaults'),
+      defaultTasksModal: document.getElementById('defaultTasksModal'),
+      defaultTasksList: document.getElementById('defaultTasksList'),
+      closeDefaultsModal: document.getElementById('closeDefaultsModal'),
+      closeDefaultsModalBtn: document.getElementById('closeDefaultsModalBtn')
+    };
+
+    function init() {
+      elements.addTask.addEventListener('click', addTask);
+      elements.clearAll.addEventListener('click', showConfirmation);
+      elements.confirmDelete.addEventListener('click', clearAll);
+      elements.cancelDelete.addEventListener('click', hideConfirmation);
+      elements.themeToggle.addEventListener('click', toggleTheme);
+      elements.taskInput.addEventListener('keypress', e => e.key === 'Enter' && addTask());
+      elements.manageDefaults.addEventListener('click', showDefaultTasksModal);
+      elements.closeDefaultsModal.addEventListener('click', hideDefaultTasksModal);
+      elements.closeDefaultsModalBtn.addEventListener('click', hideDefaultTasksModal);
+      initializeSortable();
+      setDefaultDate();
+      loadTheme();
+      checkForNewDay();
+      render();
+    }
+
+    function checkForNewDay() {
+      const today = new Date().toISOString().split('T')[0];
+      if (state.lastTaskCheck !== today && state.defaultTasks.length > 0) {
+        generateDefaultTasks();
+        state.lastTaskCheck = today;
+        saveState();
+      }
+    }
+
+    function generateDefaultTasks() {
+      state.defaultTasks.forEach(defaultTask => {
+        const newTask = {
+          id: Date.now() + Math.floor(Math.random() * 1000),
+          text: defaultTask.text,
+          category: defaultTask.category,
+          dueDate: new Date().toISOString().split('T')[0],
+          completed: false,
+          createdAt: new Date().toISOString(),
+          isFromDefault: true,
+          defaultTaskId: defaultTask.id
+        };
+        state.tasks.push(newTask);
+      });
+    }
+
+    function addTask() {
+      const text = elements.taskInput.value.trim();
+      if (!text) return;
+
+      const isDefault = elements.defaultTaskCheckbox.checked;
+      const taskData = {
+        id: Date.now(),
+        text,
+        category: elements.categoryInput.value,
+        dueDate: elements.dueDateInput.value,
+        completed: false,
+        createdAt: new Date().toISOString()
+      };
+
+      state.tasks.push(taskData);
+
+      if (isDefault) {
+        const defaultTaskData = {
+          id: taskData.id,
+          text: taskData.text,
+          category: taskData.category
+        };
+        state.defaultTasks.push(defaultTaskData);
+
+        if (state.defaultTasks.length === 1 && !state.achievements[3].unlocked) {
+          state.achievements[3].unlocked = true;
+          showAchievementNotification('First Default Task');
+        }
+        if (state.defaultTasks.length >= 5 && !state.achievements[4].unlocked) {
+          state.achievements[4].unlocked = true;
+          showAchievementNotification('5 Default Tasks');
+        }
+      }
+      saveState();
+      render();
+      elements.taskInput.value = '';
+      elements.defaultTaskCheckbox.checked = false;
+    }
+
+    function toggleTask(id) {
+      const task = state.tasks.find(t => t.id === id);
+      if (!task) {
+        console.error('Task not found:', id);
+        return;
+      }
+      task.completed = !task.completed;
+      if (task.completed) {
+        handleCompletedTask();
+        checkAchievements();
+        triggerConfetti();
+      }
+      saveState();
+      render();
+    }
+
+    function deleteTask(id) {
+      state.tasks = state.tasks.filter(task => task.id !== id);
+      saveState();
+      render();
+    }
+
+    function toggleDefaultStatus(id) {
+      const task = state.tasks.find(t => t.id === id);
+      if (!task) return;
+      const existingDefaultIndex = state.defaultTasks.findIndex(dt => dt.id === id);
+      if (existingDefaultIndex > -1) {
+        state.defaultTasks.splice(existingDefaultIndex, 1);
+      } else {
+        const defaultTask = {
+          id: task.id,
+          text: task.text,
+          category: task.category
+        };
+        state.defaultTasks.push(defaultTask);
+        if (state.defaultTasks.length === 1 && !state.achievements[3].unlocked) {
+          state.achievements[3].unlocked = true;
+          showAchievementNotification('First Default Task');
+        }
+        if (state.defaultTasks.length >= 5 && !state.achievements[4].unlocked) {
+          state.achievements[4].unlocked = true;
+          showAchievementNotification('5 Default Tasks');
+        }
+      }
+      saveState();
+      render();
+    }
+
+    function removeDefaultTask(id) {
+      state.defaultTasks = state.defaultTasks.filter(task => task.id !== id);
+      saveState();
+      renderDefaultTasksList();
+    }
+
+    function clearAll() {
+      state.tasks = [];
+      state.points = 0;
+      state.streak = 0;
+      state.lastCompleted = null;
+      state.achievements.forEach(a => a.unlocked = false);
+      saveState();
+      render();
+      hideConfirmation();
+    }
+
+    function saveState() {
+      localStorage.setItem('tasks', JSON.stringify(state.tasks));
+      localStorage.setItem('defaultTasks', JSON.stringify(state.defaultTasks));
+      localStorage.setItem('points', state.points);
+      localStorage.setItem('streak', state.streak);
+      localStorage.setItem('lastCompleted', state.lastCompleted);
+      localStorage.setItem('lastTaskCheck', state.lastTaskCheck);
+      localStorage.setItem('achievements', JSON.stringify(state.achievements));
+    }
+
+    function render() {
+      renderTaskList();
+      renderAchievements();
+      updateStats();
+    }
+
     function renderTaskList() {
-      elements.taskList.innerHTML = state.tasks.map(task => `
-        <li class="flex items-center justify-between p-3 md:p-4 bg-gray-800 rounded-lg">
-          <div class="flex items-center gap-3 w-full">
-            <button onclick="toggleTask(${task.id})" 
-              class="w-6 h-6 min-w-[24px] flex items-center justify-center rounded-full border-2 
-              ${task.completed ? 'border-green-500 bg-green-500' : 'border-gray-500'}">
-              ${task.completed ? '<i class="fas fa-check text-xs"></i>' : ''}
-            </button>
+      elements.taskList.innerHTML = state.tasks.map(task => {
+        const isDefault = state.defaultTasks.some(dt => dt.id === task.id) || task.isFromDefault;
+        return `
+          <li data-id="${task.id}" class="bg-gray-800 card rounded-lg p-3 flex justify-between items-center transition-theme">
+            <div class="flex items-center flex-1 task-item-content">
+              <button onclick="toggleTask(${task.id})"
+                aria-label="${task.completed ? 'Uncomplete' : 'Complete'} task"
+                class="w-6 h-6 border-2 border-gray-500 rounded-full flex items-center justify-center mr-3 ${task.completed ? 'bg-purple-600 border-purple-600' : ''}">
+                ${task.completed ? '<i class="fas fa-check text-xs checkmark"></i>' : ''}
+              </button>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center">
+                  <p class="${task.completed ? 'line-through text-gray-400 light-reverse' : ''} truncate">${task.text}</p>
+                  ${isDefault ? '<span class="default-task-badge ml-2">Daily</span>' : ''}
+                </div>
+                <div class="text-xs md:text-sm text-gray-400 light-reverse mt-1 task-meta flex flex-wrap gap-2">
+                  <span class="px-2 py-1 rounded category-${task.category}">
+                    ${task.category}
+                  </span>
+                  <span class="hidden md:inline">•</span>
+                  <span class="block md:inline">Due: ${task.dueDate}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <button onclick="toggleDefaultStatus(${task.id})" class="text-amber-400 hover:text-amber-600 ml-2 mr-1">
+                <i class="fas ${isDefault ? 'fa-star' : 'fa-star-o'}" title="${isDefault ? 'Remove from defaults' : 'Make default'}"></i>
+              </button>
+              <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600 ml-2">
+                <i class="fas fa-trash-alt text-sm md:text-base"></i>
+              </button>
+            </div>
+          </li>
+        `;
+      }).join('');
+    }
+
+    function renderDefaultTasksList() {
+      if (state.defaultTasks.length === 0) {
+        elements.defaultTasksList.innerHTML = `
+          <div class="text-center text-gray-400 light-reverse py-4">
+            No default tasks yet. Add some tasks and mark them as default!
+          </div>
+        `;
+        return;
+      }
+      elements.defaultTasksList.innerHTML = state.defaultTasks.map(task => `
+        <li class="bg-gray-700 card rounded-lg p-3 flex justify-between items-center transition-theme">
+          <div class="flex items-center flex-1">
+            <div class="text-amber-400 mr-3"><i class="fas fa-star"></i></div>
             <div class="flex-1 min-w-0">
-              <p class="${task.completed ? 'line-through text-gray-400' : ''} truncate">${task.text}</p>
-              <div class="text-xs md:text-sm text-gray-400 mt-1 task-meta">
-                <span class="px-2 py-1 rounded ${'category-' + task.category}">
+              <p class="truncate">${task.text}</p>
+              <div class="text-xs text-gray-400 mt-1">
+                <span class="px-2 py-1 rounded category-${task.category}">
                   ${task.category}
                 </span>
-                <span class="hidden md:inline">•</span>
-                <span class="block md:inline">Due: ${task.dueDate}</span>
               </div>
             </div>
           </div>
-          <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600 ml-2">
-            <i class="fas fa-trash-alt text-sm md:text-base"></i>
+          <button onclick="removeDefaultTask(${task.id})" class="text-red-400 hover:text-red-600 ml-2">
+            <i class="fas fa-trash-alt"></i>
           </button>
         </li>
       `).join('');
     }
+
+    function renderAchievements() {
+      elements.achievements.innerHTML = state.achievements
+        .filter(achievement => achievement.unlocked)
+        .map(achievement => `
+          <div class="bg-gray-800 card p-3 rounded-lg flex items-center transition-theme">
+            <div class="bg-purple-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">
+              <i class="fas fa-trophy text-sm"></i>
+            </div>
+            <div>
+              <p class="font-medium">${achievement.title}</p>
+              <p class="text-xs text-gray-400 light-reverse">Achievement unlocked!</p>
+            </div>
+          </div>
+        `).join('');
+    }
+
+    function updateStats() {
+      const completedTasks = state.tasks.filter(task => task.completed).length;
+      elements.completedCount.textContent = completedTasks;
+      elements.streakCount.textContent = `${state.streak} 🔥`;
+      elements.pointsCount.textContent = `${state.points} ⭐`;
+      const isDarkMode = !document.body.classList.contains('light-mode');
+      const statPanels = document.querySelectorAll('.grid > div');
+      statPanels.forEach(panel => {
+        panel.className = isDarkMode
+          ? 'bg-gray-800 card p-3 md:p-4 rounded-lg transition-theme'
+          : 'bg-gray-200 card p-3 md:p-4 rounded-lg transition-theme';
+      });
+    }
+
+    function initializeSortable() {
+      new Sortable(elements.taskList, {
+        animation: 150,
+        handle: '.task-meta',
+        onEnd: (evt) => {
+          const reorderedTasks = Array.from(elements.taskList.children)
+            .map(child => state.tasks.find(task => task.id === parseInt(child.dataset.id)));
+          state.tasks = reorderedTasks;
+          saveState();
+        }
+      });
+    }
+
+    function triggerConfetti() {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#6D28D9', '#1E3A8A', '#10B981']
+      });
+    }
+
+    function handleCompletedTask() {
+      state.points += 10;
+      updateStreak();
+    }
+
+    function updateStreak() {
+      const today = new Date().toISOString().split('T')[0];
+      if (!state.lastCompleted) {
+        state.streak = 1;
+      } else {
+        const lastDate = new Date(state.lastCompleted);
+        const diffDays = Math.floor((new Date(today) - lastDate) / (1000 * 60 * 60 * 24));
+        if (diffDays === 0) {
+          return;
+        } else if (diffDays === 1) {
+          state.streak += 1;
+        } else {
+          state.streak = 1;
+        }
+      }
+      state.lastCompleted = today;
+    }
+
+    function checkAchievements() {
+      const completedCount = state.tasks.filter(task => task.completed).length;
+      if (completedCount >= 1 && !state.achievements[0].unlocked) {
+        state.achievements[0].unlocked = true;
+        showAchievementNotification('First Task');
+      }
+      if (completedCount >= 5 && !state.achievements[1].unlocked) {
+        state.achievements[1].unlocked = true;
+        showAchievementNotification('5 Tasks');
+      }
+      if (completedCount >= 10 && !state.achievements[2].unlocked) {
+        state.achievements[2].unlocked = true;
+        showAchievementNotification('10 Tasks');
+      }
+    }
+
+    function showAchievementNotification(title) {
+      const notification = document.createElement('div');
+      notification.className = 'fixed bottom-4 right-4 bg-purple-600 text-white p-3 rounded-lg shadow-lg flex items-center';
+      notification.innerHTML = `
+        <i class="fas fa-trophy mr-2"></i>
+        <div>
+          <p class="font-bold">Achievement Unlocked!</p>
+          <p>${title}</p>
+        </div>
+      `;
+      document.body.appendChild(notification);
+      setTimeout(() => { notification.remove(); }, 3000);
+    }
+
+    function showConfirmation() {
+      elements.confirmationModal.classList.remove('hidden');
+    }
+
+    function hideConfirmation() {
+      elements.confirmationModal.classList.add('hidden');
+    }
+
+    function showDefaultTasksModal() {
+      renderDefaultTasksList();
+      elements.defaultTasksModal.classList.remove('hidden');
+    }
+
+    function hideDefaultTasksModal() {
+      elements.defaultTasksModal.classList.add('hidden');
+    }
+
+    function setDefaultDate() {
+      const today = new Date().toISOString().split('T')[0];
+      elements.dueDateInput.value = today;
+    }
+
+    function loadTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if (savedTheme === 'light') {
+        applyLightTheme();
+      } else {
+        applyDarkTheme();
+      }
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const isDarkMode = !body.classList.contains('light-mode');
+      if (isDarkMode) {
+        applyLightTheme();
+        localStorage.setItem('theme', 'light');
+      } else {
+        applyDarkTheme();
+        localStorage.setItem('theme', 'dark');
+      }
+      updateStats();
+    }
+
+    function applyLightTheme() {
+      const body = document.body;
+      body.classList.add('light-mode');
+      elements.themeToggle.innerHTML = '<i class="fas fa-sun text-yellow-400"></i>';
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f4f6fb');
+    }
+    function applyDarkTheme() {
+      const body = document.body;
+      body.classList.remove('light-mode');
+      elements.themeToggle.innerHTML = '<i class="fas fa-moon text-lg md:text-xl"></i>';
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#181a20');
+    }
+
+    // Assign to window for inline event handlers
+    window.toggleTask = toggleTask;
+    window.deleteTask = deleteTask;
+    window.toggleDefaultStatus = toggleDefaultStatus;
+    window.removeDefaultTask = removeDefaultTask;
+
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
+
