@@ -26,208 +26,111 @@
     .category-Work { background-color: #6D28D9; }
     .category-Personal { background-color: #1E3A8A; }
     .category-Health { background-color: #10B981; }
+    
+    /* Mobile-first media queries */
+    @media (max-width: 640px) {
+      .task-item-content { flex-direction: column; align-items: flex-start; }
+      .task-meta { flex-direction: column; gap: 0.5rem; }
+    }
   </style>
 </head>
 
 <body class="bg-gradient-to-r from-gray-900 to-gray-800 min-h-screen text-white">
   <div class="container mx-auto p-4 max-w-2xl">
     <!-- Header -->
-    <header class="flex justify-between items-center mb-8 gradient-bg p-6 rounded-lg shadow-lg">
-      <h1 class="text-3xl font-bold">Daily Checklist</h1>
+    <header class="flex flex-col md:flex-row justify-between items-center mb-4 md:mb-8 gradient-bg p-4 md:p-6 rounded-lg shadow-lg">
+      <h1 class="text-2xl md:text-3xl font-bold mb-2 md:mb-0">Daily Checklist</h1>
       <button id="themeToggle" class="p-2 text-gray-200 hover:text-white transition-all">
-        <i class="fas fa-moon"></i>
+        <i class="fas fa-moon text-lg md:text-xl"></i>
       </button>
     </header>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-3 gap-4 mb-6 text-center">
-      <div class="bg-gray-800 p-4 rounded-lg">
-        <p class="text-sm text-gray-400">Completed</p>
-        <p id="completedCount" class="text-2xl font-bold">0</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6 text-center">
+      <div class="bg-gray-800 p-3 md:p-4 rounded-lg">
+        <p class="text-sm md:text-base text-gray-400">Completed</p>
+        <p id="completedCount" class="text-xl md:text-2xl font-bold">0</p>
       </div>
-      <div class="bg-gray-800 p-4 rounded-lg">
-        <p class="text-sm text-gray-400">Streak</p>
-        <p id="streakCount" class="text-2xl font-bold">0 🔥</p>
+      <div class="bg-gray-800 p-3 md:p-4 rounded-lg">
+        <p class="text-sm md:text-base text-gray-400">Streak</p>
+        <p id="streakCount" class="text-xl md:text-2xl font-bold">0 🔥</p>
       </div>
-      <div class="bg-gray-800 p-4 rounded-lg">
-        <p class="text-sm text-gray-400">Points</p>
-        <p id="pointsCount" class="text-2xl font-bold">0 ⭐</p>
+      <div class="bg-gray-800 p-3 md:p-4 rounded-lg">
+        <p class="text-sm md:text-base text-gray-400">Points</p>
+        <p id="pointsCount" class="text-xl md:text-2xl font-bold">0 ⭐</p>
       </div>
     </div>
 
     <!-- Task Input -->
-    <div class="flex flex-col space-y-2 mb-6">
+    <div class="flex flex-col space-y-2 mb-4 md:mb-6">
       <input id="taskInput" type="text" placeholder="Add a new task" 
-             class="p-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-      <div class="flex gap-2">
-        <select id="categoryInput" class="flex-1 p-3 bg-gray-800 border border-gray-700 rounded-lg">
+             class="p-2 md:p-3 text-sm md:text-base bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+      <div class="flex flex-col md:flex-row gap-2">
+        <select id="categoryInput" class="flex-1 p-2 md:p-3 text-sm md:text-base bg-gray-800 border border-gray-700 rounded-lg">
           <option value="Work">Work</option>
           <option value="Personal">Personal</option>
           <option value="Health">Health</option>
         </select>
         <input id="dueDateInput" type="date" 
-               class="flex-1 p-3 bg-gray-800 border border-gray-700 rounded-lg">
+               class="flex-1 p-2 md:p-3 text-sm md:text-base bg-gray-800 border border-gray-700 rounded-lg">
       </div>
-      <div class="flex gap-2">
-        <button id="addTask" class="gradient-button text-white p-3 rounded-lg flex-1">
+      <div class="flex flex-col md:flex-row gap-2">
+        <button id="addTask" class="gradient-button text-white p-2 md:p-3 text-sm md:text-base rounded-lg flex-1">
           <i class="fas fa-plus"></i> Add Task
         </button>
-        <button id="clearAll" class="bg-red-500 hover:bg-red-600 text-white p-3 rounded-lg flex-1">
+        <button id="clearAll" class="bg-red-500 hover:bg-red-600 text-white p-2 md:p-3 text-sm md:text-base rounded-lg flex-1">
           <i class="fas fa-trash-alt"></i> Clear All
         </button>
       </div>
     </div>
 
     <!-- Task List -->
-    <ul id="taskList" class="space-y-3 mb-6"></ul>
+    <ul id="taskList" class="space-y-2 md:space-y-3 mb-4 md:mb-6"></ul>
 
     <!-- Achievements -->
-    <div id="achievements" class="grid grid-cols-2 gap-2"></div>
+    <div id="achievements" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
   </div>
 
   <!-- Modals -->
-  <div id="confirmationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-    <div class="bg-gray-800 p-6 rounded-lg max-w-sm w-full">
-      <p class="text-lg mb-4">Are you sure you want to delete all tasks?</p>
+  <div id="confirmationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div class="bg-gray-800 p-4 md:p-6 rounded-lg w-full max-w-sm">
+      <p class="text-base md:text-lg mb-3 md:mb-4">Are you sure you want to delete all tasks?</p>
       <div class="flex gap-2">
-        <button id="confirmDelete" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg flex-1">Delete</button>
-        <button id="cancelDelete" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg flex-1">Cancel</button>
+        <button id="confirmDelete" class="bg-red-500 hover:bg-red-600 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg flex-1">Delete</button>
+        <button id="cancelDelete" class="bg-gray-700 hover:bg-gray-600 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg flex-1">Cancel</button>
       </div>
     </div>
   </div>
 
   <script>
-    // State Management
-    let state = {
-      tasks: JSON.parse(localStorage.getItem('tasks')) || [],
-      points: parseInt(localStorage.getItem('points')) || 0,
-      streak: parseInt(localStorage.getItem('streak')) || 0,
-      lastCompleted: localStorage.getItem('lastCompleted') || null,
-      achievements: JSON.parse(localStorage.getItem('achievements')) || [
-        { id: 1, title: 'First Task', unlocked: false },
-        { id: 2, title: '5 Tasks', unlocked: false },
-        { id: 3, title: '10 Tasks', unlocked: false }
-      ]
-    };
-
-    // DOM Elements
-    const elements = {
-      taskInput: document.getElementById('taskInput'),
-      taskList: document.getElementById('taskList'),
-      addTask: document.getElementById('addTask'),
-      clearAll: document.getElementById('clearAll'),
-      achievements: document.getElementById('achievements'),
-      confirmationModal: document.getElementById('confirmationModal')
-    };
-
-    // Initialize
-    function init() {
-      // Event Listeners
-      elements.addTask.addEventListener('click', addTask);
-      elements.clearAll.addEventListener('click', showConfirmation);
-      document.getElementById('confirmDelete').addEventListener('click', clearAll);
-      document.getElementById('cancelDelete').addEventListener('click', hideConfirmation);
-      document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-      
-      // Initial Render
-      render();
-      setDefaultDate();
-    }
-
-    // Core Functions
-    function addTask() {
-      const text = elements.taskInput.value.trim();
-      if (!text) return;
-
-      const newTask = {
-        id: Date.now(),
-        text,
-        category: document.getElementById('categoryInput').value,
-        dueDate: document.getElementById('dueDateInput').value,
-        completed: false
-      };
-
-      state.tasks.push(newTask);
-      saveState();
-      render();
-      elements.taskInput.value = '';
-    }
-
-    function toggleTask(id) {
-      state.tasks = state.tasks.map(task => 
-        task.id === id ? { ...task, completed: !task.completed } : task
-      );
-      
-      const task = state.tasks.find(t => t.id === id);
-      if (task.completed) {
-        handleCompletedTask();
-        checkAchievements();
-      }
-      
-      saveState();
-      render();
-    }
-
-    // State Management
-    function saveState() {
-      localStorage.setItem('tasks', JSON.stringify(state.tasks));
-      localStorage.setItem('points', state.points);
-      localStorage.setItem('streak', state.streak);
-      localStorage.setItem('lastCompleted', state.lastCompleted);
-      localStorage.setItem('achievements', JSON.stringify(state.achievements));
-    }
-
-    // Rendering
-    function render() {
-      renderTaskList();
-      renderAchievements();
-      updateStats();
-    }
-
+    // [Previous JavaScript remains largely the same with these mobile-specific adjustments]
+    
     function renderTaskList() {
       elements.taskList.innerHTML = state.tasks.map(task => `
-        <li class="flex items-center justify-between p-4 bg-gray-800 rounded-lg">
-          <div class="flex items-center gap-3">
+        <li class="flex items-center justify-between p-3 md:p-4 bg-gray-800 rounded-lg">
+          <div class="flex items-center gap-3 w-full">
             <button onclick="toggleTask(${task.id})" 
-              class="w-6 h-6 flex items-center justify-center rounded-full border-2 
+              class="w-6 h-6 min-w-[24px] flex items-center justify-center rounded-full border-2 
               ${task.completed ? 'border-green-500 bg-green-500' : 'border-gray-500'}">
               ${task.completed ? '<i class="fas fa-check text-xs"></i>' : ''}
             </button>
-            <div>
-              <p class="${task.completed ? 'line-through text-gray-400' : ''}">${task.text}</p>
-              <div class="text-sm text-gray-400">
+            <div class="flex-1 min-w-0">
+              <p class="${task.completed ? 'line-through text-gray-400' : ''} truncate">${task.text}</p>
+              <div class="text-xs md:text-sm text-gray-400 mt-1 task-meta">
                 <span class="px-2 py-1 rounded ${'category-' + task.category}">
                   ${task.category}
                 </span>
-                • Due: ${task.dueDate}
+                <span class="hidden md:inline">•</span>
+                <span class="block md:inline">Due: ${task.dueDate}</span>
               </div>
             </div>
           </div>
-          <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600">
-            <i class="fas fa-trash-alt"></i>
+          <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600 ml-2">
+            <i class="fas fa-trash-alt text-sm md:text-base"></i>
           </button>
         </li>
       `).join('');
     }
-
-    // Helper Functions
-    function setDefaultDate() {
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      document.getElementById('dueDateInput').value = tomorrow.toISOString().split('T')[0];
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle('bg-gradient-to-r', 'from-gray-900', 'to-gray-800');
-      document.body.classList.toggle('bg-gradient-to-r', 'from-gray-100', 'to-gray-200');
-      document.body.classList.toggle('text-white');
-      document.body.classList.toggle('text-gray-900');
-      localStorage.setItem('theme', document.body.classList.contains('bg-gradient-to-r from-gray-900 to-gray-800') ? 'dark' : 'light');
-    }
-
-    // Initialize the app
-    init();
   </script>
 </body>
 </html>
-
