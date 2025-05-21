@@ -247,6 +247,8 @@
       <button id="closeDefaultsModalBtn" class="w-full bg-gray-700 hover:bg-gray-600 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg transition-theme">Close</button>
     </div>
   </div>
+    <audio id="completeSound" src="	https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
+
 
   <script>
     // --- State Management and Application Logic (same as your original, updated for theme) ---
@@ -304,6 +306,15 @@
       loadTheme();
       checkForNewDay();
       render();
+    }
+
+
+    function playCompleteSound() {
+      const audio = document.getElementById('completeSound');
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play();
+      }
     }
 
     function checkForNewDay() {
@@ -380,7 +391,7 @@
       if (task.completed) {
         handleCompletedTask();
         checkAchievements();
-        triggerConfetti();
+        triggerConfetti(); // will play confetti and the sound
       }
       saveState();
       render();
@@ -568,6 +579,7 @@
         origin: { y: 0.6 },
         colors: ['#6D28D9', '#1E3A8A', '#10B981']
       });
+      playCompleteSound();
     }
 
     function handleCompletedTask() {
@@ -680,7 +692,6 @@
       document.querySelector('meta[name="theme-color"]').setAttribute('content', '#181a20');
     }
 
-    // Assign to window for inline event handlers
     window.toggleTask = toggleTask;
     window.deleteTask = deleteTask;
     window.toggleDefaultStatus = toggleDefaultStatus;
