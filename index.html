@@ -130,26 +130,22 @@
       </div>
     </div>
 
-    <!-- Task Input -->
-    <div class="flex flex-col space-y-2 mb-4 md:mb-6">
-      <input id="taskInput" type="text" placeholder="Add a new task"
-             class="p-2 md:p-3 text-sm md:text-base input-field rounded-lg transition-theme"/>
-      <div class="flex flex-col md:flex-row gap-2">
-        <select id="categoryInput" class="flex-1 p-2 md:p-3 text-sm md:text-base input-field rounded-lg transition-theme">
+    <<form id="inputForm" class="flex flex-col gap-2 bg-gray-900 p-4 card rounded-2xl shadow mb-4">
+      <input id="taskInput" type="text" placeholder="What will you do today?" autocomplete="off"
+        class="p-3 text-base input-field rounded-xl font-medium mb-1 mt-1 focus:ring-2 focus:ring-purple-400" required maxlength="64"/>
+      <div class="grid grid-cols-2 gap-2 md:gap-3">
+        <select id="categoryInput" class="w-full p-3 input-field rounded-xl" 
+          aria-label="Task category">
           <option value="Work">Work</option>
           <option value="Personal">Personal</option>
           <option value="Health">Health</option>
         </select>
-        <input id="dueDateInput" type="date"
-               class="flex-1 p-2 md:p-3 text-sm md:text-base input-field rounded-lg transition-theme"/>
+        <input id="dueDateInput" type="date" class="w-full input-field p-3 rounded-xl" aria-label="Due Date"/>
       </div>
-      <div class="flex flex-col md:flex-row gap-2">
-        <div class="flex items-center mb-2 md:mb-0">
-          <input id="defaultTaskCheckbox" type="checkbox" class="mr-2 w-4 h-4 accent-purple-600"/>
-          <label for="defaultTaskCheckbox" class="text-sm md:text-base">Make Default Daily Task</label>
-        </div>
+      <div class="flex items-center">
+        <input id="defaultTaskCheckbox" type="checkbox" class="mr-3 w-5 h-5 accent-purple-600 border-2 rounded-md" />
+        <label for="defaultTaskCheckbox" class="text-sm font-medium">Make Default Daily Task</label>
       </div>
-      
       <div class="flex gap-2 mt-2">
         <button id="addTask" type="submit" class="flex-1 gradient-button text-white rounded-xl p-3 font-semibold text-base shadow-sm touch-feedback focus:outline-none">
           <i class="fas fa-plus mr-2"></i> Add Task
@@ -161,7 +157,7 @@
           <i class="fas fa-trash-alt mr-1"></i> Clear
         </button>
       </div>
-    </div>
+    </form>
 
     <!-- Task List -->
     <ul id="taskList" class="space-y-2 md:space-y-3 mb-4 md:mb-6"></ul>
