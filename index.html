@@ -1,646 +1,971 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#181a20">
-  <title>Daily Checklist</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+  <title>Strong Man 30-Day Challenge</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <style>
-    /* Root color variables for dark and light themes */
-    :root {
-      --primary-bg: #181a20;
-      --secondary-bg: #232634;
-      --text-main: #e5e7eb;
-      --text-fade: #b9bcc6;
-      --accent: #7c3aed;
-      --accent-light: #a5b4fc;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --card-bg: #232634;
-      --input-bg: #232634;
-      --input-border: #303544;
-      --category-Work: #7c3aed;
-      --category-Personal: #2563eb;
-      --category-Health: #10b981;
-      --gradient-bg: linear-gradient(135deg, #7c3aed, #2563eb);
-    }
-    body.light-mode {
-      --primary-bg: #f4f6fb; --secondary-bg: #e0e7ef;
-      --text-main: #232634; --text-fade: #4181c4;
-      --accent: #6d28d9; --accent-light: #d1c3fa;
-      --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
-      --card-bg: #fff; --input-bg: #fff; --input-border: #c7d8eb;
-      --category-Work: #6d28d9; --category-Personal: #2563eb; --category-Health: #10b981;
-      --gradient-bg: linear-gradient(135deg, #d1c3fa 0%, #a7c7ee 100%);
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      min-height: 100vh;
     }
 
-    html, body {
-      background: var(--primary-bg);
-      color: var(--text-main);
-      transition: background 0.3s, color 0.3s;
-      min-height: 100%;
-      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-      font-size: 16px;
-      scroll-behavior: smooth;
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .gradient-bg { background: var(--gradient-bg); }
-    .gradient-button { background: var(--gradient-bg); border: none; transition: background 0.3s; }
-    .input-field {
-      background: var(--input-bg); color: var(--text-main);
-      border: 1.5px solid var(--input-border); transition: background 0.3s, color 0.3s, border 0.3s;
-    }
-    .input-field:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-light);}
-    .card { background: var(--card-bg); color: var(--text-main); transition: background 0.3s, color 0.3s;}
-    .category-Work { background-color: var(--category-Work) !important; color: #fff;}
-    .category-Personal { background-color: var(--category-Personal) !important; color: #fff;}
-    .category-Health { background-color: var(--category-Health) !important; color: #fff;}
 
-    /* Touch & mobile improvements */
-    .task-touch { min-height: 54px; min-width: 44px;}
-    .fab-btn { box-shadow: 0 4px 24px 0 rgba(88,41,200,0.17); transition: background 0.2s;}
-    .default-task-badge { background: var(--warning); color: #fff; padding: 0.20em 0.7em; border-radius: 9999px; font-size: 0.8rem; font-weight: 600; margin-left: .55em; }
-    .checkmark { animation: checkmark .26s cubic-bezier(.68, -.55, .27, 1.55);}
-    @keyframes checkmark { 0% { transform: scale(0.3); } 60% { transform: scale(1.25); } 100% { transform: scale(1); }}
-    .modal-panel { background: var(--card-bg); color: var(--text-main); transition: background .3s, color .3s; }
-    .modal-button { font-weight: 500; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--input-border);}
-    .modal-button:hover { background: var(--secondary-bg);}
-    .touch-feedback { transition: transform .1s; }
-    .touch-feedback:active { transform: scale(.96);}
-    /* Modal z-index and sizing */
-    .z-modal { z-index: 1020; }
-    @media (max-width: 640px) {
-      .container { max-width: 100vw !important; padding: 0 0.5rem !important; }
-      .header-main { flex-direction: column; align-items: flex-start; gap: .7rem;}
-      .stats-row { grid-template-columns: 1fr !important; gap: .65rem !important;}
-      .mobile-modal {
-        align-items: flex-end !important;
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hover-lift {
+      transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .pulse-success {
+      animation: pulse-success 2s infinite;
+    }
+
+    @keyframes pulse-success {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
       }
-      .modal-panel {
-        border-radius: 1.25rem 1.25rem 0 0 !important;
-        width: 100% !important; max-width: none !important;
-        box-shadow: 0 -2px 16px 0 rgba(48,40,56,0.29);
-        animation: slideup .27s cubic-bezier(.46,.03,.52,.96);
-      }
-      @keyframes slideup {
-        from { transform: translateY(85px); opacity: 0;}
-        to   { transform: translateY(0); opacity:1;}
+
+      50% {
+        box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
       }
     }
-    .no-tap-highlight { -webkit-tap-highlight-color: transparent; }
-    .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-    /* Light mode overrides for text and bg */
-    body.light-mode .bg-gray-800, .bg-gray-800.light-reverse { background: var(--card-bg) !important; color: var(--text-main) !important;}
-    body.light-mode .text-gray-400, .text-gray-400.light-reverse { color: var(--text-fade) !important;}
-    body.light-mode .border-gray-700 { border-color: var(--input-border) !important;}
-    body.light-mode .bg-amber-500 { background-color: var(--warning) !important; color: #fff !important;}
-    body.light-mode .hover\:bg-amber-600:hover { background-color: #f8b420 !important;}
-    body.light-mode .bg-red-500 { background-color: var(--danger) !important; color: #fff !important;}
-    body.light-mode .hover\:bg-red-600:hover { background-color: #fd7061 !important;}  /* Root color variables for dark and light themes */
+
+    .slide-in {
+      animation: slideIn 0.6s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.3s ease;
+    }
+
+    .neon-glow {
+      box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+    }
+
+    .task-checkbox {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #667eea;
+      border-radius: 4px;
+      background: transparent;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .task-checkbox:checked {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-color: #667eea;
+    }
+
+    .task-checkbox:checked::after {
+      content: '✓';
+      position: absolute;
+      top: -2px;
+      left: 2px;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .floating-card {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .streak-fire {
+      animation: fireGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes fireGlow {
+      0% {
+        text-shadow: 0 0 10px #ff4444;
+      }
+      100% {
+        text-shadow: 0 0 20px #ff6666, 0 0 30px #ff4444;
+      }
+    }
+
+    .celebration {
+      animation: celebration 0.6s ease-out;
+    }
+
+    @keyframes celebration {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .calendar-day {
+      transition: all 0.3s ease;
+    }
+
+    .calendar-day:hover {
+      transform: scale(1.05);
+    }
+
+    .modal {
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-gold {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #000;
+    }
+
+    .badge-silver {
+      background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+      color: #000;
+    }
+
+    .badge-bronze {
+      background: linear-gradient(135deg, #CD7F32, #B8860B);
+      color: #fff;
+    }
   </style>
 </head>
-<body class="min-h-screen text-white transition-theme">
 
-  <div class="container mx-auto p-4 max-w-2xl">
-    <!-- Header -->
-    <header class="flex flex-col md:flex-row justify-between items-center mb-4 md:mb-8 gradient-bg p-4 md:p-6 rounded-lg shadow-lg transition-theme">
-      <h1 class="text-2xl md:text-3xl font-bold mb-2 md:mb-0">Daily Checklist</h1>
-      <button id="themeToggle" class="p-2 transition-theme" title="Toggle theme" aria-label="Toggle theme">
-        <i class="fas fa-moon text-lg md:text-xl"></i>
-      </button>
+<body class="text-white font-sans">
+  <!-- Main app container -->
+  <main class="relative z-10 p-4 max-w-5xl mx-auto space-y-8" x-data="challengeApp()" x-init="init()">
+    
+    <!-- Header with enhanced stats -->
+    <header class="glass-effect rounded-2xl p-6 text-center hover-lift">
+      <h1 class="text-5xl font-bold gradient-text mb-4">💪 Strong Man Challenge</h1>
+      <p class="text-gray-300 text-lg mb-6">30 Days to Transform Your Mind & Body</p>
+      
+      <!-- Enhanced Stats Dashboard -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-gray-800 rounded-lg p-4">
+          <div class="text-3xl font-bold text-blue-400" x-text="completedDays.length"></div>
+          <div class="text-sm text-gray-400">Days Completed</div>
+        </div>
+        <div class="bg-gray-800 rounded-lg p-4">
+          <div class="text-3xl font-bold text-green-400" x-text="currentStreak"></div>
+          <div class="text-sm text-gray-400">Current Streak</div>
+        </div>
+        <div class="bg-gray-800 rounded-lg p-4">
+          <div class="text-3xl font-bold text-purple-400" x-text="longestStreak"></div>
+          <div class="text-sm text-gray-400">Longest Streak</div>
+        </div>
+        <div class="bg-gray-800 rounded-lg p-4">
+          <div class="text-3xl font-bold text-yellow-400" x-text="completionRate + '%'"></div>
+          <div class="text-sm text-gray-400">Completion Rate</div>
+        </div>
+      </div>
+
+      <!-- Achievement Badges -->
+      <div class="flex flex-wrap gap-2 justify-center mb-4" x-show="achievements.length > 0">
+        <template x-for="achievement in achievements">
+          <span class="badge" :class="achievement.class" x-text="achievement.name"></span>
+        </template>
+      </div>
+
+      <!-- Overall Progress Bar -->
+      <div class="w-full bg-gray-700 rounded-full h-4 mb-4">
+        <div class="progress-bar h-4 rounded-full transition-all duration-500" 
+             :style="`width: ${(completedDays.length / 30) * 100}%`"></div>
+      </div>
+      <p class="text-sm text-gray-400">
+        <span x-text="completedDays.length"></span> of 30 days completed
+        <span x-show="completedDays.length === 30" class="text-green-400 font-bold">🎉 CHALLENGE COMPLETE!</span>
+      </p>
     </header>
 
-    <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6 text-center">
-      <div class="bg-gray-800 card p-3 md:p-4 rounded-lg transition-theme">
-        <p class="text-sm md:text-base text-gray-400 light-reverse">Completed</p>
-        <p id="completedCount" class="text-xl md:text-2xl font-bold">0</p>
+    <!-- Today's Focus with enhanced daily tracking -->
+    <section class="glass-effect rounded-2xl p-6 hover-lift slide-in">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold gradient-text">Today's Mission</h2>
+        <div class="flex items-center gap-4">
+          <div class="text-sm text-gray-400">
+            Day <span x-text="getCurrentDay()"></span> of 30
+          </div>
+          <button @click="completeDay()" 
+                  :disabled="isDayCompleted(getCurrentDay()) || !canCompleteDay()"
+                  :class="isDayCompleted(getCurrentDay()) ? 'bg-green-600' : (canCompleteDay() ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-600')"
+                  class="px-4 py-2 rounded-lg transition-colors">
+            <span x-text="isDayCompleted(getCurrentDay()) ? '✅ Completed' : (canCompleteDay() ? '🎯 Complete Day' : '❌ Complete Tasks First')"></span>
+          </button>
+        </div>
       </div>
-      <div class="bg-gray-800 card p-3 md:p-4 rounded-lg transition-theme">
-        <p class="text-sm md:text-base text-gray-400 light-reverse">Streak</p>
-        <p id="streakCount" class="text-xl md:text-2xl font-bold">0 🔥</p>
+
+      <!-- Current Week Info -->
+      <div class="bg-gray-800 rounded-lg p-4 mb-6">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-3xl" x-text="getCurrentWeek().emoji"></span>
+          <div>
+            <h3 class="font-bold text-lg" x-text="getCurrentWeek().title"></h3>
+            <p class="text-purple-400 font-medium" x-text="'Focus: ' + getCurrentWeek().focus"></p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="text-blue-400 font-medium">🧠 Mental:</span>
+            <p x-text="getCurrentWeek().mental"></p>
+          </div>
+          <div>
+            <span class="text-green-400 font-medium">💪 Physical:</span>
+            <p x-text="getCurrentWeek().physical"></p>
+          </div>
+        </div>
       </div>
-      <div class="bg-gray-800 card p-3 md:p-4 rounded-lg transition-theme">
-        <p class="text-sm md:text-base text-gray-400 light-reverse">Points</p>
-        <p id="pointsCount" class="text-xl md:text-2xl font-bold">0 ⭐</p>
+
+      <!-- Daily Tasks with validation -->
+      <div class="space-y-3">
+        <template x-for="(task, index) in tasks" :key="index">
+          <div class="flex items-center gap-3 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
+            <input type="checkbox" 
+                   class="task-checkbox" 
+                   x-model="task.done"
+                   :disabled="isDayCompleted(getCurrentDay())"
+                   @change="saveProgress()">
+            <span class="flex-1 text-lg" 
+                  :class="task.done ? 'line-through text-gray-500' : ''"
+                  x-text="task.title"></span>
+            <div x-show="task.done" class="text-green-400 text-2xl">✅</div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Daily Progress -->
+      <div class="mt-6 p-4 bg-gray-800 rounded-lg">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm text-gray-400">Daily Progress</span>
+          <span class="text-sm font-bold" x-text="Math.round(dailyProgress) + '%'"></span>
+        </div>
+        <div class="w-full bg-gray-700 rounded-full h-2">
+          <div class="progress-bar h-2 rounded-full transition-all duration-300" 
+               :style="`width: ${dailyProgress}%`"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enhanced Calendar View -->
+    <section class="glass-effect rounded-2xl p-6 hover-lift">
+      <h2 class="text-2xl font-bold gradient-text mb-6">📅 30-Day Calendar</h2>
+      <div class="grid grid-cols-7 gap-2 mb-4">
+        <div class="text-center font-bold text-gray-400 p-2">Sun</div>
+        <div class="text-center font-bold text-gray-400 p-2">Mon</div>
+        <div class="text-center font-bold text-gray-400 p-2">Tue</div>
+        <div class="text-center font-bold text-gray-400 p-2">Wed</div>
+        <div class="text-center font-bold text-gray-400 p-2">Thu</div>
+        <div class="text-center font-bold text-gray-400 p-2">Fri</div>
+        <div class="text-center font-bold text-gray-400 p-2">Sat</div>
+      </div>
+      <div class="grid grid-cols-7 gap-2">
+        <template x-for="day in Array.from({length: 30}, (_, i) => i + 1)" :key="day">
+          <div @click="showDayDetails(day)"
+               class="calendar-day aspect-square flex items-center justify-center rounded-lg cursor-pointer text-sm font-bold transition-all"
+               :class="[
+                 completedDays.includes(day) ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-300',
+                 day === getCurrentDay() ? 'ring-2 ring-blue-400' : '',
+                 day < getCurrentDay() && !completedDays.includes(day) ? 'bg-red-600' : ''
+               ]">
+            <div class="text-center">
+              <div x-text="day"></div>
+              <div class="text-xs mt-1">
+                <span x-show="completedDays.includes(day)">✅</span>
+                <span x-show="day < getCurrentDay() && !completedDays.includes(day)">❌</span>
+                <span x-show="day === getCurrentDay()">📍</span>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </section>
+
+    <!-- Enhanced Journal with Templates -->
+    <section class="glass-effect rounded-2xl p-6 hover-lift">
+      <h2 class="text-2xl font-bold gradient-text mb-6">📝 Warrior Journal</h2>
+      
+      <!-- Journal Templates -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-2">Quick Templates:</label>
+        <div class="flex flex-wrap gap-2">
+          <button @click="insertTemplate('daily')" class="px-3 py-1 bg-blue-600 rounded text-sm hover:bg-blue-700">Daily Reflection</button>
+          <button @click="insertTemplate('weekly')" class="px-3 py-1 bg-purple-600 rounded text-sm hover:bg-purple-700">Weekly Review</button>
+          <button @click="insertTemplate('challenge')" class="px-3 py-1 bg-green-600 rounded text-sm hover:bg-green-700">Challenge Log</button>
+          <button @click="insertTemplate('goals')" class="px-3 py-1 bg-yellow-600 rounded text-sm hover:bg-yellow-700">Goal Setting</button>
+        </div>
+      </div>
+
+      <textarea x-model="journal"
+                class="w-full h-40 p-4 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none resize-none"
+                placeholder="Document your journey, thoughts, and breakthroughs..."></textarea>
+      
+      <div class="flex justify-between items-center mt-4">
+        <div class="text-sm text-gray-400">
+          <span x-text="journal.length"></span> characters
+        </div>
+        <div class="flex gap-2">
+          <button @click="clearJournal()" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+            🗑️ Clear
+          </button>
+          <button @click="saveJournal()" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
+            💾 Save Entry
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enhanced Weekly Breakdown -->
+    <section class="glass-effect rounded-2xl p-6 hover-lift">
+      <h2 class="text-2xl font-bold gradient-text mb-6">📊 Weekly Breakdown</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <template x-for="(week, index) in weeks" :key="index">
+          <div class="bg-gray-800 rounded-lg p-6 floating-card"
+               :class="getCurrentWeekIndex() === index ? 'ring-2 ring-blue-400' : ''">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="text-4xl" x-text="week.emoji"></span>
+              <div>
+                <h3 class="font-bold text-xl" x-text="week.title"></h3>
+                <p class="text-purple-400 font-medium" x-text="'Focus: ' + week.focus"></p>
+              </div>
+              <div x-show="getCurrentWeekIndex() === index" class="ml-auto">
+                <span class="badge badge-gold">Current</span>
+              </div>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="p-3 bg-gray-700 rounded">
+                <span class="text-blue-400 font-medium">🧠 Mental Challenge:</span>
+                <p class="text-sm mt-1" x-text="week.mental"></p>
+              </div>
+              <div class="p-3 bg-gray-700 rounded">
+                <span class="text-green-400 font-medium">💪 Physical Challenge:</span>
+                <p class="text-sm mt-1" x-text="week.physical"></p>
+              </div>
+            </div>
+
+            <!-- Week Progress -->
+            <div class="mt-4">
+              <div class="flex justify-between text-sm mb-2">
+                <span>Week Progress</span>
+                <span x-text="getWeekProgress(index) + '%'"></span>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-2">
+                <div class="progress-bar h-2 rounded-full" 
+                     :style="`width: ${getWeekProgress(index)}%`"></div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </section>
+
+
+
+    <!-- Weekly Reflection Modal -->
+    <div x-show="showWeeklyReflection" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 flex items-center justify-center modal"
+         @click.self="closeWeeklyReflection()">
+      <div class="glass-effect rounded-2xl p-6 max-w-2xl w-full m-4 max-h-96 overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold gradient-text">💬 Week <span x-text="completedWeekNumber"></span> Reflection</h3>
+          <button @click="closeWeeklyReflection()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="text-center p-4 bg-green-900 rounded-lg mb-6">
+            <div class="text-3xl mb-2">🎉</div>
+            <h4 class="text-xl font-bold text-green-400 mb-2">Congratulations!</h4>
+            <p class="text-sm">You've completed Week <span x-text="completedWeekNumber"></span>! Time to reflect on your journey.</p>
+          </div>
+          
+          <template x-for="(prompt, index) in reflectionPrompts" :key="index">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-300" x-text="prompt"></label>
+              <textarea x-model="weeklyReflectionAnswers[index]"
+                        class="w-full h-20 p-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none resize-none"
+                        :placeholder="'Your thoughts on: ' + prompt"></textarea>
+            </div>
+          </template>
+          
+          <div class="flex justify-end gap-3 mt-6">
+            <button @click="closeWeeklyReflection()" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg transition-colors">
+              Skip for Now
+            </button>
+            <button @click="saveWeeklyReflection()" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
+              💾 Save Reflection
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div x-show="showModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 flex items-center justify-center modal"
+         @click.self="showModal = false">
+      <div class="glass-effect rounded-2xl p-6 max-w-md w-full m-4">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold gradient-text">Day <span x-text="selectedDay"></span> Details</h3>
+          <button @click="showModal = false" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="p-4 bg-gray-800 rounded-lg">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-2xl" x-text="completedDays.includes(selectedDay) ? '✅' : (selectedDay < getCurrentDay() ? '❌' : '⏳')"></span>
+              <span class="font-medium" x-text="completedDays.includes(selectedDay) ? 'Completed' : (selectedDay < getCurrentDay() ? 'Missed' : 'Upcoming')"></span>
+            </div>
+            <p class="text-sm text-gray-400" x-text="getWeekForDay(selectedDay)?.title + ' - ' + getWeekForDay(selectedDay)?.focus"></p>
+          </div>
+          
+          <div x-show="selectedDay < getCurrentDay() && !completedDays.includes(selectedDay)" class="p-4 bg-red-900 rounded-lg">
+            <p class="text-sm">⚠️ This day was missed. Stay strong and focus on today!</p>
+          </div>
+          
+          <div x-show="selectedDay === getCurrentDay()" class="p-4 bg-blue-900 rounded-lg">
+            <p class="text-sm">🎯 This is today! Complete all tasks to mark this day as successful.</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <form id="inputForm" class="flex flex-col gap-2 bg-gray-900 p-4 card rounded-2xl shadow mb-4">
-      <input id="taskInput" type="text" placeholder="What will you do today?" autocomplete="off"
-        class="p-3 text-base input-field rounded-xl font-medium mb-1 mt-1 focus:ring-2 focus:ring-purple-400" required maxlength="64"/>
-      <div class="grid grid-cols-2 gap-2 md:gap-3">
-        <select id="categoryInput" class="w-full p-3 input-field rounded-xl" 
-          aria-label="Task category">
-          <option value="Work">Work</option>
-          <option value="Personal">Personal</option>
-          <option value="Health">Health</option>
-        </select>
-        <input id="dueDateInput" type="date" class="w-full input-field p-3 rounded-xl" aria-label="Due Date"/>
-      </div>
-      <div class="flex items-center">
-        <input id="defaultTaskCheckbox" type="checkbox" class="mr-3 w-5 h-5 accent-purple-600 border-2 rounded-md" />
-        <label for="defaultTaskCheckbox" class="text-sm font-medium">Make Default Daily Task</label>
-      </div>
-      <div class="flex gap-2 mt-2">
-        <button id="addTask" type="submit" class="flex-1 gradient-button text-white rounded-xl p-3 font-semibold text-base shadow-sm touch-feedback focus:outline-none">
-          <i class="fas fa-plus mr-2"></i> Add Task
+    <!-- Data Management -->
+    <section class="glass-effect rounded-2xl p-6 hover-lift">
+      <h2 class="text-2xl font-bold gradient-text mb-6">⚙️ Challenge Management</h2>
+      <div class="grid md:grid-cols-3 gap-4">
+        <button @click="resetChallenge()" class="p-4 bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+          <div class="text-2xl mb-2">🔄</div>
+          <div class="font-medium">Reset Challenge</div>
+          <div class="text-sm text-gray-300">Start fresh</div>
         </button>
-        <button id="manageDefaults" type="button" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white rounded-xl p-3 font-semibold text-base shadow-sm touch-feedback">
-          <i class="fas fa-cog mr-2"></i> Defaults
+        
+        <button @click="exportProgress()" class="p-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+          <div class="text-2xl mb-2">📊</div>
+          <div class="font-medium">Export Progress</div>
+          <div class="text-sm text-gray-300">Download data</div>
         </button>
-        <button id="clearAll" type="button" class="flex-1 bg-red-500 hover:bg-red-600 text-white rounded-xl p-3 font-semibold text-base shadow-sm touch-feedback">
-          <i class="fas fa-trash-alt mr-1"></i> Clear
+        
+        <button @click="showStats()" class="p-4 bg-green-600 hover:bg-green-700 rounded-lg transition-colors">
+          <div class="text-2xl mb-2">📈</div>
+          <div class="font-medium">Detailed Stats</div>
+          <div class="text-sm text-gray-300">View analytics</div>
         </button>
       </div>
-    </form>
+    </section>
 
-    <!-- Task List -->
-    <ul id="taskList" class="space-y-2 md:space-y-3 mb-4 md:mb-6"></ul>
-    <!-- Achievements -->
-    <div id="achievements" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
-  </div>
-
-  <!-- Modals -->
-  <div id="confirmationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-    <div class="modal-panel p-4 md:p-6 rounded-lg w-full max-w-sm transition-theme">
-      <p class="text-base md:text-lg mb-3 md:mb-4">Are you sure you want to delete all tasks?</p>
-      <div class="flex gap-2">
-        <button id="confirmDelete" class="modal-button bg-red-500 hover:bg-red-600 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg flex-1 transition-theme">Delete</button>
-        <button id="cancelDelete" class="modal-button bg-gray-700 hover:bg-gray-600 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg flex-1 transition-theme">Cancel</button>
-      </div>
-    </div>
-  </div>
-  <!-- Default Tasks Management Modal -->
-  <div id="defaultTasksModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-    <div class="modal-panel p-4 md:p-6 rounded-lg w-full max-w-lg transition-theme">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg md:text-xl font-bold">Manage Default Tasks</h2>
-        <button id="closeDefaultsModal" class="text-gray-400 hover:text-white">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <p class="text-base mb-4">These tasks will be automatically added at the start of each day.</p>
-      <ul id="defaultTasksList" class="space-y-2 max-h-60 overflow-y-auto mb-4"></ul>
-      <button id="closeDefaultsModalBtn" class="w-full bg-gray-700 hover:bg-gray-600 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg transition-theme">Close</button>
-    </div>
-  </div>
-    <audio id="completeSound" src="	https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
-
+  </main>
 
   <script>
-    // --- State Management and Application Logic (same as your original, updated for theme) ---
-    let state = {
-      tasks: JSON.parse(localStorage.getItem('tasks')) || [],
-      defaultTasks: JSON.parse(localStorage.getItem('defaultTasks')) || [],
-      points: parseInt(localStorage.getItem('points')) || 0,
-      streak: parseInt(localStorage.getItem('streak')) || 0,
-      lastCompleted: localStorage.getItem('lastCompleted') || null,
-      lastTaskCheck: localStorage.getItem('lastTaskCheck') || null,
-      achievements: JSON.parse(localStorage.getItem('achievements')) || [
-        { id: 1, title: 'First Task', unlocked: false },
-        { id: 2, title: '5 Tasks', unlocked: false },
-        { id: 3, title: '10 Tasks', unlocked: false },
-        { id: 4, title: 'First Default Task', unlocked: false },
-        { id: 5, title: '5 Default Tasks', unlocked: false }
-      ]
-    };
+    function challengeApp() {
+      return {
+        tasks: [],
+        weeks: [],
+        reflectionPrompts: [],
+        journal: '',
+        completedDays: [],
+        showModal: false,
+        selectedDay: 1,
+        startDate: null,
+        showWeeklyReflection: false,
+        completedWeekNumber: 0,
+        weeklyReflectionAnswers: [],
+        weeklyReflections: [],
 
-    const elements = {
-      taskInput: document.getElementById('taskInput'),
-      taskList: document.getElementById('taskList'),
-      addTask: document.getElementById('addTask'),
-      clearAll: document.getElementById('clearAll'),
-      confirmDelete: document.getElementById('confirmDelete'),
-      cancelDelete: document.getElementById('cancelDelete'),
-      themeToggle: document.getElementById('themeToggle'),
-      confirmationModal: document.getElementById('confirmationModal'),
-      completedCount: document.getElementById('completedCount'),
-      streakCount: document.getElementById('streakCount'),
-      pointsCount: document.getElementById('pointsCount'),
-      achievements: document.getElementById('achievements'),
-      categoryInput: document.getElementById('categoryInput'),
-      dueDateInput: document.getElementById('dueDateInput'),
-      defaultTaskCheckbox: document.getElementById('defaultTaskCheckbox'),
-      manageDefaults: document.getElementById('manageDefaults'),
-      defaultTasksModal: document.getElementById('defaultTasksModal'),
-      defaultTasksList: document.getElementById('defaultTasksList'),
-      closeDefaultsModal: document.getElementById('closeDefaultsModal'),
-      closeDefaultsModalBtn: document.getElementById('closeDefaultsModalBtn')
-    };
+        init() {
+          // Initialize start date if not set
+          if (!this.startDate) {
+            this.startDate = new Date().toISOString().split('T')[0];
+          }
 
-    function init() {
-      elements.addTask.addEventListener('click', addTask);
-      elements.clearAll.addEventListener('click', showConfirmation);
-      elements.confirmDelete.addEventListener('click', clearAll);
-      elements.cancelDelete.addEventListener('click', hideConfirmation);
-      elements.themeToggle.addEventListener('click', toggleTheme);
-      elements.taskInput.addEventListener('keypress', e => e.key === 'Enter' && addTask());
-      elements.manageDefaults.addEventListener('click', showDefaultTasksModal);
-      elements.closeDefaultsModal.addEventListener('click', hideDefaultTasksModal);
-      elements.closeDefaultsModalBtn.addEventListener('click', hideDefaultTasksModal);
-      initializeSortable();
-      setDefaultDate();
-      loadTheme();
-      checkForNewDay();
-      render();
-    }
+          const defaultTasks = [
+            { title: '✅ Wake up before 6:30 AM', done: false },
+            { title: '🏋️ 45-Minute Workout', done: false },
+            { title: '🧊 Cold Shower', done: false },
+            { title: '📖 Read 10 Pages', done: false },
+            { title: '🚫 No Junk / Porn / Time Waste', done: false }
+          ];
 
+          const defaultWeeks = [
+            {
+              emoji: '💪',
+              title: 'Week 1',
+              focus: 'Self-Discipline',
+              mental: 'Journal: "What does strength mean to me?"',
+              physical: 'Pushups, Squats, Planks (3 sets daily)'
+            },
+            {
+              emoji: '🔥',
+              title: 'Week 2',
+              focus: 'Resilience & Grit',
+              mental: 'Watch 1 David Goggins or Jocko Willink video',
+              physical: 'Add running (min 1 km or 10 min jog)'
+            },
+            {
+              emoji: '🧠',
+              title: 'Week 3',
+              focus: 'Control Emotions',
+              mental: 'Meditate 10 mins daily, journal emotions honestly',
+              physical: 'Add pull-ups or resistance training'
+            },
+            {
+              emoji: '👑',
+              title: 'Week 4',
+              focus: 'Purpose & Leadership',
+              mental: 'Write a life mission statement (Why you exist)',
+              physical: 'Final week: Combine strength + cardio'
+            }
+          ];
 
-    function playCompleteSound() {
-      const audio = document.getElementById('completeSound');
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play();
-      }
-    }
+          this.tasks = defaultTasks;
+          this.weeks = defaultWeeks;
+          this.reflectionPrompts = [
+            'What did I do well this week?',
+            'What made me uncomfortable?',
+            'Did I let myself down anywhere?',
+            'What will I fix next week?'
+          ];
+          this.weeklyReflectionAnswers = ['', '', '', ''];
 
-    function checkForNewDay() {
-      const today = new Date().toISOString().split('T')[0];
-      if (state.lastTaskCheck !== today && state.defaultTasks.length > 0) {
-        generateDefaultTasks();
-        state.lastTaskCheck = today;
-        saveState();
-      }
-    }
+          this.loadProgress();
+        },
 
-    function generateDefaultTasks() {
-      state.defaultTasks.forEach(defaultTask => {
-        const newTask = {
-          id: Date.now() + Math.floor(Math.random() * 1000),
-          text: defaultTask.text,
-          category: defaultTask.category,
-          dueDate: new Date().toISOString().split('T')[0],
-          completed: false,
-          createdAt: new Date().toISOString(),
-          isFromDefault: true,
-          defaultTaskId: defaultTask.id
-        };
-        state.tasks.push(newTask);
-      });
-    }
+        loadProgress() {
+          const saved = this.getStoredData();
+          if (saved) {
+            this.completedDays = saved.completedDays || [];
+            this.journal = saved.journal || '';
+            this.startDate = saved.startDate || new Date().toISOString().split('T')[0];
+            this.weeklyReflections = saved.weeklyReflections || [];
+          }
+        },
 
-    function addTask() {
-      const text = elements.taskInput.value.trim();
-      if (!text) return;
+        saveProgress() {
+          const data = {
+            completedDays: this.completedDays,
+            journal: this.journal,
+            startDate: this.startDate,
+            tasks: this.tasks,
+            weeklyReflections: this.weeklyReflections,
+            lastUpdated: new Date().toISOString()
+          };
+          // Store in memory instead of localStorage
+          window.challengeData = data;
+        },
 
-      const isDefault = elements.defaultTaskCheckbox.checked;
-      const taskData = {
-        id: Date.now(),
-        text,
-        category: elements.categoryInput.value,
-        dueDate: elements.dueDateInput.value,
-        completed: false,
-        createdAt: new Date().toISOString()
-      };
+        getStoredData() {
+          return window.challengeData || null;
+        },
 
-      state.tasks.push(taskData);
+        getCurrentDay() {
+          const today = new Date();
+          const start = new Date(this.startDate);
+          const diffTime = Math.abs(today - start);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          return Math.min(diffDays, 30);
+        },
 
-      if (isDefault) {
-        const defaultTaskData = {
-          id: taskData.id,
-          text: taskData.text,
-          category: taskData.category
-        };
-        state.defaultTasks.push(defaultTaskData);
+        getCurrentWeek() {
+          const day = this.getCurrentDay();
+          const weekIndex = Math.min(Math.floor((day - 1) / 7), 3);
+          return this.weeks[weekIndex];
+        },
 
-        if (state.defaultTasks.length === 1 && !state.achievements[3].unlocked) {
-          state.achievements[3].unlocked = true;
-          showAchievementNotification('First Default Task');
+        getCurrentWeekIndex() {
+          const day = this.getCurrentDay();
+          return Math.min(Math.floor((day - 1) / 7), 3);
+        },
+
+        getWeekForDay(day) {
+          const weekIndex = Math.min(Math.floor((day - 1) / 7), 3);
+          return this.weeks[weekIndex];
+        },
+
+        getWeekProgress(weekIndex) {
+          const startDay = weekIndex * 7 + 1;
+          const endDay = Math.min(startDay + 6, 30);
+          const weekDays = [];
+          for (let i = startDay; i <= endDay; i++) {
+            weekDays.push(i);
+          }
+          const completedInWeek = weekDays.filter(day => this.completedDays.includes(day)).length;
+          return Math.round((completedInWeek / weekDays.length) * 100);
+        },
+
+        get dailyProgress() {
+          const completedTasks = this.tasks.filter(task => task.done).length;
+          return (completedTasks / this.tasks.length) * 100;
+        },
+
+        get currentStreak() {
+          let streak = 0;
+          const currentDay = this.getCurrentDay();
+          
+          for (let i = currentDay; i >= 1; i--) {
+            if (this.completedDays.includes(i)) {
+              streak++;
+            } else {
+              break;
+            }
+          }
+          return streak;
+        },
+
+        get longestStreak() {
+          let longest = 0;
+          let current = 0;
+          
+          for (let i = 1; i <= 30; i++) {
+            if (this.completedDays.includes(i)) {
+              current++;
+              longest = Math.max(longest, current);
+            } else {
+              current = 0;
+            }
+          }
+          return longest;
+        },
+
+        get completionRate() {
+          const currentDay = this.getCurrentDay();
+          const daysPassed = Math.min(currentDay, 30);
+          return daysPassed > 0 ? Math.round((this.completedDays.length / daysPassed) * 100) : 0;
+        },
+
+        get achievements() {
+          const achievements = [];
+          
+          if (this.currentStreak >= 7) {
+            achievements.push({ name: 'Week Warrior', class: 'badge-bronze' });
+          }
+          if (this.currentStreak >= 14) {
+            achievements.push({ name: 'Fortnight Fighter', class: 'badge-silver' });
+          }
+          if (this.currentStreak >= 21) {
+            achievements.push({ name: 'Three Week Champion', class: 'badge-gold' });
+          }
+          if (this.completedDays.length === 30) {
+            achievements.push({ name: 'Ultimate Warrior', class: 'badge-gold' });
+          }
+          if (this.completionRate === 100) {
+            achievements.push({ name: 'Perfect Record', class: 'badge-gold' });
+          }
+          if (this.longestStreak >= 10) {
+            achievements.push({ name: 'Streak Master', class: 'badge-silver' });
+          }
+          
+          return achievements;
+        },
+
+        canCompleteDay() {
+          return this.tasks.every(task => task.done);
+        },
+
+        isDayCompleted(day) {
+          return this.completedDays.includes(day);
+        },
+
+        completeDay() {
+          const currentDay = this.getCurrentDay();
+          if (this.canCompleteDay() && !this.isDayCompleted(currentDay)) {
+            this.completedDays.push(currentDay);
+            
+            // Check if we completed a week
+            this.checkWeekCompletion(currentDay);
+            
+            this.resetDailyTasks();
+            this.saveProgress();
+            
+            // Celebration animation
+            const button = event.target;
+            button.classList.add('celebration');
+            setTimeout(() => {
+              button.classList.remove('celebration');
+            }, 600);
+          }
+        },
+
+        checkWeekCompletion(dayJustCompleted) {
+          // Check if this day completes a week
+          const weekNumber = Math.floor((dayJustCompleted - 1) / 7) + 1;
+          const weekStartDay = (weekNumber - 1) * 7 + 1;
+          const weekEndDay = Math.min(weekNumber * 7, 30);
+          
+          // Check if all days in this week are completed
+          let weekCompleted = true;
+          for (let day = weekStartDay; day <= weekEndDay; day++) {
+            if (!this.completedDays.includes(day)) {
+              weekCompleted = false;
+              break;
+            }
+          }
+          
+          // If week is completed and we haven't shown reflection for this week yet
+          if (weekCompleted && !this.weeklyReflections.find(r => r.week === weekNumber)) {
+            setTimeout(() => {
+              this.showWeeklyReflectionModal(weekNumber);
+            }, 1000); // Show after 1 second delay
+          }
+        },
+
+        showWeeklyReflectionModal(weekNumber) {
+          this.completedWeekNumber = weekNumber;
+          this.weeklyReflectionAnswers = ['', '', '', ''];
+          this.showWeeklyReflection = true;
+        },
+
+        closeWeeklyReflection() {
+          this.showWeeklyReflection = false;
+        },
+
+        saveWeeklyReflection() {
+          const reflection = {
+            week: this.completedWeekNumber,
+            answers: [...this.weeklyReflectionAnswers],
+            completedDate: new Date().toISOString(),
+            weekFocus: this.weeks[this.completedWeekNumber - 1].focus
+          };
+          
+          this.weeklyReflections.push(reflection);
+          this.saveProgress();
+          this.showWeeklyReflection = false;
+          
+          // Show success message
+          alert(`Week ${this.completedWeekNumber} reflection saved! 🎉`);
+        },
+
+        resetDailyTasks() {
+          this.tasks.forEach(task => {
+            task.done = false;
+          });
+        },
+
+        showDayDetails(day) {
+          this.selectedDay = day;
+          this.showModal = true;
+        },
+
+        insertTemplate(type) {
+          const templates = {
+            daily: `📅 Daily Reflection - Day ${this.getCurrentDay()}
+
+🎯 Today's Accomplishments:
+- 
+
+💪 Challenges Faced:
+- 
+
+🧠 Mental State:
+- 
+
+📈 Tomorrow's Focus:
+- 
+
+`,
+            weekly: `📊 Weekly Review - Week ${this.getCurrentWeekIndex() + 1}
+
+✅ What I Did Well:
+- 
+
+⚡ Areas for Improvement:
+- 
+
+🎯 Key Lessons Learned:
+- 
+
+📋 Next Week's Goals:
+- 
+
+`,
+            challenge: `🏆 Challenge Log - Day ${this.getCurrentDay()}
+
+💪 Physical Training:
+- 
+
+🧠 Mental Training:
+- 
+
+🔥 Breakthrough Moment:
+- 
+
+💯 Motivation Level (1-10):
+- 
+
+`,
+            goals: `🎯 Goal Setting Session
+
+🏆 30-Day Challenge Goals:
+- 
+
+💪 Physical Targets:
+- 
+
+🧠 Mental Targets:
+- 
+
+📈 Success Metrics:
+- 
+
+🔥 Why This Matters:
+- 
+
+`
+          };
+          
+          this.journal = templates[type] + this.journal;
+        },
+
+        clearJournal() {
+          if (confirm('Are you sure you want to clear your journal?')) {
+            this.journal = '';
+            this.saveProgress();
+          }
+        },
+
+        saveJournal() {
+          this.saveProgress();
+          const button = event.target;
+          const originalText = button.textContent;
+          
+          button.classList.add('pulse-success');
+          button.textContent = '✅ Saved!';
+          
+          setTimeout(() => {
+            button.classList.remove('pulse-success');
+            button.textContent = originalText;
+          }, 2000);
+        },
+
+        resetChallenge() {
+          if (confirm('Are you sure you want to reset the entire challenge? This cannot be undone.')) {
+            this.completedDays = [];
+            this.journal = '';
+            this.startDate = new Date().toISOString().split('T')[0];
+            this.resetDailyTasks();
+            this.saveProgress();
+            
+            // Clear stored data
+            window.challengeData = null;
+            
+            alert('Challenge reset successfully! 💪');
+          }
+        },
+
+        exportProgress() {
+          const data = {
+            completedDays: this.completedDays,
+            journal: this.journal,
+            startDate: this.startDate,
+            currentDay: this.getCurrentDay(),
+            currentStreak: this.currentStreak,
+            longestStreak: this.longestStreak,
+            completionRate: this.completionRate,
+            achievements: this.achievements,
+            exportDate: new Date().toISOString()
+          };
+          
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `strongman-challenge-${new Date().toISOString().split('T')[0]}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        },
+
+        showStats() {
+          const stats = `
+📊 DETAILED CHALLENGE STATISTICS
+
+🎯 Overall Progress:
+• Days Completed: ${this.completedDays.length}/30 (${this.completionRate}%)
+• Current Streak: ${this.currentStreak} days
+• Longest Streak: ${this.longestStreak} days
+• Current Day: ${this.getCurrentDay()}
+
+📈 Weekly Breakdown:
+• Week 1: ${this.getWeekProgress(0)}% complete
+• Week 2: ${this.getWeekProgress(1)}% complete
+• Week 3: ${this.getWeekProgress(2)}% complete
+• Week 4: ${this.getWeekProgress(3)}% complete
+
+🏆 Achievements Earned: ${this.achievements.length}
+${this.achievements.map(a => `• ${a.name}`).join('\n')}
+
+📝 Journal Entries: ${this.journal.length} characters
+
+🔥 Started: ${this.startDate}
+📅 Days Remaining: ${Math.max(0, 30 - this.getCurrentDay())}
+
+${this.completedDays.length === 30 ? '🎉 CONGRATULATIONS! CHALLENGE COMPLETE!' : '💪 Keep pushing forward, warrior!'}
+          `;
+          
+          alert(stats);
         }
-        if (state.defaultTasks.length >= 5 && !state.achievements[4].unlocked) {
-          state.achievements[4].unlocked = true;
-          showAchievementNotification('5 Default Tasks');
-        }
-      }
-      saveState();
-      render();
-      elements.taskInput.value = '';
-      elements.defaultTaskCheckbox.checked = false;
-    }
-
-    function toggleTask(id) {
-      const task = state.tasks.find(t => t.id === id);
-      if (!task) {
-        console.error('Task not found:', id);
-        return;
-      }
-      task.completed = !task.completed;
-      if (task.completed) {
-        handleCompletedTask();
-        checkAchievements();
-        triggerConfetti(); // will play confetti and the sound
-      }
-      saveState();
-      render();
-    }
-
-    function deleteTask(id) {
-      state.tasks = state.tasks.filter(task => task.id !== id);
-      saveState();
-      render();
-    }
-
-    function toggleDefaultStatus(id) {
-      const task = state.tasks.find(t => t.id === id);
-      if (!task) return;
-      const existingDefaultIndex = state.defaultTasks.findIndex(dt => dt.id === id);
-      if (existingDefaultIndex > -1) {
-        state.defaultTasks.splice(existingDefaultIndex, 1);
-      } else {
-        const defaultTask = {
-          id: task.id,
-          text: task.text,
-          category: task.category
-        };
-        state.defaultTasks.push(defaultTask);
-        if (state.defaultTasks.length === 1 && !state.achievements[3].unlocked) {
-          state.achievements[3].unlocked = true;
-          showAchievementNotification('First Default Task');
-        }
-        if (state.defaultTasks.length >= 5 && !state.achievements[4].unlocked) {
-          state.achievements[4].unlocked = true;
-          showAchievementNotification('5 Default Tasks');
-        }
-      }
-      saveState();
-      render();
-    }
-
-    function removeDefaultTask(id) {
-      state.defaultTasks = state.defaultTasks.filter(task => task.id !== id);
-      saveState();
-      renderDefaultTasksList();
-    }
-
-    function clearAll() {
-      state.tasks = [];
-      state.points = 0;
-      state.streak = 0;
-      state.lastCompleted = null;
-      state.achievements.forEach(a => a.unlocked = false);
-      saveState();
-      render();
-      hideConfirmation();
-    }
-
-    function saveState() {
-      localStorage.setItem('tasks', JSON.stringify(state.tasks));
-      localStorage.setItem('defaultTasks', JSON.stringify(state.defaultTasks));
-      localStorage.setItem('points', state.points);
-      localStorage.setItem('streak', state.streak);
-      localStorage.setItem('lastCompleted', state.lastCompleted);
-      localStorage.setItem('lastTaskCheck', state.lastTaskCheck);
-      localStorage.setItem('achievements', JSON.stringify(state.achievements));
-    }
-
-    function render() {
-      renderTaskList();
-      renderAchievements();
-      updateStats();
-    }
-
-    function renderTaskList() {
-      elements.taskList.innerHTML = state.tasks.map(task => {
-        const isDefault = state.defaultTasks.some(dt => dt.id === task.id) || task.isFromDefault;
-        return `
-          <li data-id="${task.id}" class="bg-gray-800 card rounded-lg p-3 flex justify-between items-center transition-theme">
-            <div class="flex items-center flex-1 task-item-content">
-              <button onclick="toggleTask(${task.id})"
-                aria-label="${task.completed ? 'Uncomplete' : 'Complete'} task"
-                class="w-6 h-6 border-2 border-gray-500 rounded-full flex items-center justify-center mr-3 ${task.completed ? 'bg-purple-600 border-purple-600' : ''}">
-                ${task.completed ? '<i class="fas fa-check text-xs checkmark"></i>' : ''}
-              </button>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center">
-                  <p class="${task.completed ? 'line-through text-gray-400 light-reverse' : ''} truncate">${task.text}</p>
-                  ${isDefault ? '<span class="default-task-badge ml-2">Daily</span>' : ''}
-                </div>
-                <div class="text-xs md:text-sm text-gray-400 light-reverse mt-1 task-meta flex flex-wrap gap-2">
-                  <span class="px-2 py-1 rounded category-${task.category}">
-                    ${task.category}
-                  </span>
-                  <span class="hidden md:inline">•</span>
-                  <span class="block md:inline">Due: ${task.dueDate}</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <button onclick="toggleDefaultStatus(${task.id})" class="text-amber-400 hover:text-amber-600 ml-2 mr-1">
-                <i class="fas ${isDefault ? 'fa-star' : 'fa-star-o'}" title="${isDefault ? 'Remove from defaults' : 'Make default'}"></i>
-              </button>
-              <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600 ml-2">
-                <i class="fas fa-trash-alt text-sm md:text-base"></i>
-              </button>
-            </div>
-          </li>
-        `;
-      }).join('');
-    }
-
-    function renderDefaultTasksList() {
-      if (state.defaultTasks.length === 0) {
-        elements.defaultTasksList.innerHTML = `
-          <div class="text-center text-gray-400 light-reverse py-4">
-            No default tasks yet. Add some tasks and mark them as default!
-          </div>
-        `;
-        return;
-      }
-      elements.defaultTasksList.innerHTML = state.defaultTasks.map(task => `
-        <li class="bg-gray-700 card rounded-lg p-3 flex justify-between items-center transition-theme">
-          <div class="flex items-center flex-1">
-            <div class="text-amber-400 mr-3"><i class="fas fa-star"></i></div>
-            <div class="flex-1 min-w-0">
-              <p class="truncate">${task.text}</p>
-              <div class="text-xs text-gray-400 mt-1">
-                <span class="px-2 py-1 rounded category-${task.category}">
-                  ${task.category}
-                </span>
-              </div>
-            </div>
-          </div>
-          <button onclick="removeDefaultTask(${task.id})" class="text-red-400 hover:text-red-600 ml-2">
-            <i class="fas fa-trash-alt"></i>
-          </button>
-        </li>
-      `).join('');
-    }
-
-    function renderAchievements() {
-      elements.achievements.innerHTML = state.achievements
-        .filter(achievement => achievement.unlocked)
-        .map(achievement => `
-          <div class="bg-gray-800 card p-3 rounded-lg flex items-center transition-theme">
-            <div class="bg-purple-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">
-              <i class="fas fa-trophy text-sm"></i>
-            </div>
-            <div>
-              <p class="font-medium">${achievement.title}</p>
-              <p class="text-xs text-gray-400 light-reverse">Achievement unlocked!</p>
-            </div>
-          </div>
-        `).join('');
-    }
-
-    function updateStats() {
-      const completedTasks = state.tasks.filter(task => task.completed).length;
-      elements.completedCount.textContent = completedTasks;
-      elements.streakCount.textContent = `${state.streak} 🔥`;
-      elements.pointsCount.textContent = `${state.points} ⭐`;
-      const isDarkMode = !document.body.classList.contains('light-mode');
-      const statPanels = document.querySelectorAll('.grid > div');
-      statPanels.forEach(panel => {
-        panel.className = isDarkMode
-          ? 'bg-gray-800 card p-3 md:p-4 rounded-lg transition-theme'
-          : 'bg-gray-200 card p-3 md:p-4 rounded-lg transition-theme';
-      });
-    }
-
-    function initializeSortable() {
-      new Sortable(elements.taskList, {
-        animation: 150,
-        handle: '.task-meta',
-        onEnd: (evt) => {
-          const reorderedTasks = Array.from(elements.taskList.children)
-            .map(child => state.tasks.find(task => task.id === parseInt(child.dataset.id)));
-          state.tasks = reorderedTasks;
-          saveState();
-        }
-      });
-    }
-
-    function triggerConfetti() {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#6D28D9', '#1E3A8A', '#10B981']
-      });
-      playCompleteSound();
-    }
-
-    function handleCompletedTask() {
-      state.points += 10;
-      updateStreak();
-    }
-
-    function updateStreak() {
-      const today = new Date().toISOString().split('T')[0];
-      if (!state.lastCompleted) {
-        state.streak = 1;
-      } else {
-        const lastDate = new Date(state.lastCompleted);
-        const diffDays = Math.floor((new Date(today) - lastDate) / (1000 * 60 * 60 * 24));
-        if (diffDays === 0) {
-          return;
-        } else if (diffDays === 1) {
-          state.streak += 1;
-        } else {
-          state.streak = 1;
-        }
-      }
-      state.lastCompleted = today;
-    }
-
-    function checkAchievements() {
-      const completedCount = state.tasks.filter(task => task.completed).length;
-      if (completedCount >= 1 && !state.achievements[0].unlocked) {
-        state.achievements[0].unlocked = true;
-        showAchievementNotification('First Task');
-      }
-      if (completedCount >= 5 && !state.achievements[1].unlocked) {
-        state.achievements[1].unlocked = true;
-        showAchievementNotification('5 Tasks');
-      }
-      if (completedCount >= 10 && !state.achievements[2].unlocked) {
-        state.achievements[2].unlocked = true;
-        showAchievementNotification('10 Tasks');
       }
     }
-
-    function showAchievementNotification(title) {
-      const notification = document.createElement('div');
-      notification.className = 'fixed bottom-4 right-4 bg-purple-600 text-white p-3 rounded-lg shadow-lg flex items-center';
-      notification.innerHTML = `
-        <i class="fas fa-trophy mr-2"></i>
-        <div>
-          <p class="font-bold">Achievement Unlocked!</p>
-          <p>${title}</p>
-        </div>
-      `;
-      document.body.appendChild(notification);
-      setTimeout(() => { notification.remove(); }, 3000);
-    }
-
-    function showConfirmation() {
-      elements.confirmationModal.classList.remove('hidden');
-    }
-
-    function hideConfirmation() {
-      elements.confirmationModal.classList.add('hidden');
-    }
-
-    function showDefaultTasksModal() {
-      renderDefaultTasksList();
-      elements.defaultTasksModal.classList.remove('hidden');
-    }
-
-    function hideDefaultTasksModal() {
-      elements.defaultTasksModal.classList.add('hidden');
-    }
-
-    function setDefaultDate() {
-      const today = new Date().toISOString().split('T')[0];
-      elements.dueDateInput.value = today;
-    }
-
-    function loadTheme() {
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      if (savedTheme === 'light') {
-        applyLightTheme();
-      } else {
-        applyDarkTheme();
-      }
-    }
-
-    function toggleTheme() {
-      const body = document.body;
-      const isDarkMode = !body.classList.contains('light-mode');
-      if (isDarkMode) {
-        applyLightTheme();
-        localStorage.setItem('theme', 'light');
-      } else {
-        applyDarkTheme();
-        localStorage.setItem('theme', 'dark');
-      }
-      updateStats();
-    }
-
-    function applyLightTheme() {
-      const body = document.body;
-      body.classList.add('light-mode');
-      elements.themeToggle.innerHTML = '<i class="fas fa-sun text-yellow-400"></i>';
-      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f4f6fb');
-    }
-    function applyDarkTheme() {
-      const body = document.body;
-      body.classList.remove('light-mode');
-      elements.themeToggle.innerHTML = '<i class="fas fa-moon text-lg md:text-xl"></i>';
-      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#181a20');
-    }
-
-    window.toggleTask = toggleTask;
-    window.deleteTask = deleteTask;
-    window.toggleDefaultStatus = toggleDefaultStatus;
-    window.removeDefaultTask = removeDefaultTask;
-
-    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
-</html>
 
+</html>
