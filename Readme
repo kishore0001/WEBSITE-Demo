@@ -1,4 +1,4 @@
-function categorizeRulesVerticalFormat() {
+function categorizeRulesVerticalFormatWithColorsAndCounts() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const week1Sheet = ss.getSheetByName("Week1");
   const week2Sheet = ss.getSheetByName("Week2");
@@ -36,13 +36,14 @@ function categorizeRulesVerticalFormat() {
   for (let rule in ruleMap) {
     const w1 = ruleMap[rule].week1;
     const w2 = ruleMap[rule].week2;
+    const displayText = `${rule} (W1: ${w1}, W2: ${w2})`;
 
     if (w1 >= 5 && w2 >= 5) {
-      frequent.push(rule);
+      frequent.push(displayText);
     } else if (w1 > 0 && w2 > 0) {
-      occasional.push(rule);
+      occasional.push(displayText);
     } else {
-      rareNew.push(rule);
+      rareNew.push(displayText);
     }
   }
 
@@ -51,14 +52,27 @@ function categorizeRulesVerticalFormat() {
   summarySheet.getRange("B1").setValue("Occasional");
   summarySheet.getRange("C1").setValue("Rare / New");
 
+  // Apply header background colors
+  summarySheet.getRange("A1").setBackground("#d9ead3"); // light green
+  summarySheet.getRange("B1").setBackground("#fff2cc"); // light yellow
+  summarySheet.getRange("C1").setBackground("#f4cccc"); // light red
+
   // Get max number of rows to write
   const maxLength = Math.max(frequent.length, occasional.length, rareNew.length);
 
   for (let i = 0; i < maxLength; i++) {
-    summarySheet.getRange(i + 2, 1).setValue(frequent[i] || "");
-    summarySheet.getRange(i + 2, 2).setValue(occasional[i] || "");
-    summarySheet.getRange(i + 2, 3).setValue(rareNew[i] || "");
+    if (frequent[i]) summarySheet.getRange(i + 2, 1).setValue(frequent[i]);
+    if (occasional[i]) summarySheet.getRange(i + 2, 2).setValue(occasional[i]);
+    if (rareNew[i]) summarySheet.getRange(i + 2, 3).setValue(rareNew[i]);
   }
+
+  // Apply column background colors
+  if (frequent.length > 0)
+    summarySheet.getRange(2, 1, frequent.length, 1).setBackground("#d9ead3"); // green
+  if (occasional.length > 0)
+    summarySheet.getRange(2, 2, occasional.length, 1).setBackground("#fff2cc"); // yellow
+  if (rareNew.length > 0)
+    summarySheet.getRange(2, 3, rareNew.length, 1).setBackground("#f4cccc"); // red
 
   SpreadsheetApp.flush();
 }
