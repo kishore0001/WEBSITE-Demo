@@ -1,4 +1,4 @@
-function categorizeRules() {
+function categorizeRulesVerticalFormat() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const week1Sheet = ss.getSheetByName("Week1");
   const week2Sheet = ss.getSheetByName("Week2");
@@ -6,20 +6,19 @@ function categorizeRules() {
 
   // Clear Summary sheet
   summarySheet.clear();
-  summarySheet.appendRow(["Rule Name", "Week 1 Count", "Week 2 Count", "Category"]);
 
-  // Get data
+  // Get data from Week 1 and Week 2
   const week1Data = week1Sheet.getRange(2, 1, week1Sheet.getLastRow() - 1, 2).getValues();
   const week2Data = week2Sheet.getRange(2, 1, week2Sheet.getLastRow() - 1, 2).getValues();
 
   const ruleMap = {};
 
-  // Process Week 1
+  // Process Week 1 rules
   for (let [rule, count] of week1Data) {
     ruleMap[rule] = { week1: count || 0, week2: 0 };
   }
 
-  // Process Week 2
+  // Process Week 2 rules
   for (let [rule, count] of week2Data) {
     if (ruleMap[rule]) {
       ruleMap[rule].week2 = count || 0;
@@ -28,21 +27,37 @@ function categorizeRules() {
     }
   }
 
-  // Categorize
+  // Arrays to hold categorized rules
+  const frequent = [];
+  const occasional = [];
+  const rareNew = [];
+
+  // Categorize rules
   for (let rule in ruleMap) {
     const w1 = ruleMap[rule].week1;
     const w2 = ruleMap[rule].week2;
-    let category = "";
 
     if (w1 >= 5 && w2 >= 5) {
-      category = "Frequent";
+      frequent.push(rule);
     } else if (w1 > 0 && w2 > 0) {
-      category = "Occasional";
+      occasional.push(rule);
     } else {
-      category = "Rare / New";
+      rareNew.push(rule);
     }
+  }
 
-    summarySheet.appendRow([rule, w1, w2, category]);
+  // Set headers
+  summarySheet.getRange("A1").setValue("Frequent");
+  summarySheet.getRange("B1").setValue("Occasional");
+  summarySheet.getRange("C1").setValue("Rare / New");
+
+  // Get max number of rows to write
+  const maxLength = Math.max(frequent.length, occasional.length, rareNew.length);
+
+  for (let i = 0; i < maxLength; i++) {
+    summarySheet.getRange(i + 2, 1).setValue(frequent[i] || "");
+    summarySheet.getRange(i + 2, 2).setValue(occasional[i] || "");
+    summarySheet.getRange(i + 2, 3).setValue(rareNew[i] || "");
   }
 
   SpreadsheetApp.flush();
