@@ -1,0 +1,49 @@
+function categorizeRules() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const week1Sheet = ss.getSheetByName("Week1");
+  const week2Sheet = ss.getSheetByName("Week2");
+  const summarySheet = ss.getSheetByName("Summary") || ss.insertSheet("Summary");
+
+  // Clear Summary sheet
+  summarySheet.clear();
+  summarySheet.appendRow(["Rule Name", "Week 1 Count", "Week 2 Count", "Category"]);
+
+  // Get data
+  const week1Data = week1Sheet.getRange(2, 1, week1Sheet.getLastRow() - 1, 2).getValues();
+  const week2Data = week2Sheet.getRange(2, 1, week2Sheet.getLastRow() - 1, 2).getValues();
+
+  const ruleMap = {};
+
+  // Process Week 1
+  for (let [rule, count] of week1Data) {
+    ruleMap[rule] = { week1: count || 0, week2: 0 };
+  }
+
+  // Process Week 2
+  for (let [rule, count] of week2Data) {
+    if (ruleMap[rule]) {
+      ruleMap[rule].week2 = count || 0;
+    } else {
+      ruleMap[rule] = { week1: 0, week2: count || 0 };
+    }
+  }
+
+  // Categorize
+  for (let rule in ruleMap) {
+    const w1 = ruleMap[rule].week1;
+    const w2 = ruleMap[rule].week2;
+    let category = "";
+
+    if (w1 >= 5 && w2 >= 5) {
+      category = "Frequent";
+    } else if (w1 > 0 && w2 > 0) {
+      category = "Occasional";
+    } else {
+      category = "Rare / New";
+    }
+
+    summarySheet.appendRow([rule, w1, w2, category]);
+  }
+
+  SpreadsheetApp.flush();
+}
