@@ -1,24 +1,22 @@
-function categorizeRulesVerticalFormatWithColorsAndCounts() {
+function categorizeRulesStyledAndAligned() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const week1Sheet = ss.getSheetByName("Week1");
   const week2Sheet = ss.getSheetByName("Week2");
   const summarySheet = ss.getSheetByName("Summary") || ss.insertSheet("Summary");
 
-  // Clear Summary sheet
+  // Clear previous data
   summarySheet.clear();
 
-  // Get data from Week 1 and Week 2
+  // Get data
   const week1Data = week1Sheet.getRange(2, 1, week1Sheet.getLastRow() - 1, 2).getValues();
   const week2Data = week2Sheet.getRange(2, 1, week2Sheet.getLastRow() - 1, 2).getValues();
 
   const ruleMap = {};
 
-  // Process Week 1 rules
   for (let [rule, count] of week1Data) {
     ruleMap[rule] = { week1: count || 0, week2: 0 };
   }
 
-  // Process Week 2 rules
   for (let [rule, count] of week2Data) {
     if (ruleMap[rule]) {
       ruleMap[rule].week2 = count || 0;
@@ -27,52 +25,66 @@ function categorizeRulesVerticalFormatWithColorsAndCounts() {
     }
   }
 
-  // Arrays to hold categorized rules
-  const frequent = [];
-  const occasional = [];
-  const rareNew = [];
+  const frequent = [], occasional = [], rareNew = [];
 
-  // Categorize rules
   for (let rule in ruleMap) {
     const w1 = ruleMap[rule].week1;
     const w2 = ruleMap[rule].week2;
-    const displayText = `${rule} (W1: ${w1}, W2: ${w2})`;
-
     if (w1 >= 5 && w2 >= 5) {
-      frequent.push(displayText);
+      frequent.push({ rule, w1, w2 });
     } else if (w1 > 0 && w2 > 0) {
-      occasional.push(displayText);
+      occasional.push({ rule, w1, w2 });
     } else {
-      rareNew.push(displayText);
+      rareNew.push({ rule, w1, w2 });
     }
   }
 
   // Set headers
-  summarySheet.getRange("A1").setValue("Frequent");
-  summarySheet.getRange("B1").setValue("Occasional");
-  summarySheet.getRange("C1").setValue("Rare / New");
+  const headers = ["Frequent", "Occasional", "Rare / New"];
+  summarySheet.getRange("A1:C1").setValues([headers]);
+  summarySheet.getRange("A1:C1")
+    .setFontWeight("bold")
+    .setFontSize(13)
+    .setHorizontalAlignment("center")
+    .setVerticalAlignment("middle")
+    .setWrap(true);
 
-  // Apply header background colors
-  summarySheet.getRange("A1").setBackground("#d9ead3"); // light green
-  summarySheet.getRange("B1").setBackground("#fff2cc"); // light yellow
-  summarySheet.getRange("C1").setBackground("#f4cccc"); // light red
+  summarySheet.getRange("A1").setBackground("#d9ead3");
+  summarySheet.getRange("B1").setBackground("#fff2cc");
+  summarySheet.getRange("C1").setBackground("#f4cccc");
 
-  // Get max number of rows to write
   const maxLength = Math.max(frequent.length, occasional.length, rareNew.length);
 
   for (let i = 0; i < maxLength; i++) {
-    if (frequent[i]) summarySheet.getRange(i + 2, 1).setValue(frequent[i]);
-    if (occasional[i]) summarySheet.getRange(i + 2, 2).setValue(occasional[i]);
-    if (rareNew[i]) summarySheet.getRange(i + 2, 3).setValue(rareNew[i]);
+    const row = i + 2;
+
+    const formatCell = (col, entry, color) => {
+      if (!entry) return;
+      const ruleText = `${entry.rule} (W1: ${entry.w1}, W2: ${entry.w2})`;
+      const cell = summarySheet.getRange(row, col);
+      cell.setValue(ruleText);
+      cell.setFontSize(12)
+          .setBackground(color)
+          .setHorizontalAlignment("center")
+          .setVerticalAlignment("middle")
+          .setWrap(true);
+
+      // Bold the counts only
+      const text = SpreadsheetApp.newRichTextValue()
+        .setText(ruleText)
+        .setTextStyle(0, entry.rule.length, SpreadsheetApp.newTextStyle().setBold(false).build())
+        .setTextStyle(entry.rule.length, ruleText.length, SpreadsheetApp.newTextStyle().setBold(true).build())
+        .build();
+
+      cell.setRichTextValue(text);
+    };
+
+    formatCell(1, frequent[i], "#d9ead3");
+    formatCell(2, occasional[i], "#fff2cc");
+    formatCell(3, rareNew[i], "#f4cccc");
   }
 
-  // Apply column background colors
-  if (frequent.length > 0)
-    summarySheet.getRange(2, 1, frequent.length, 1).setBackground("#d9ead3"); // green
-  if (occasional.length > 0)
-    summarySheet.getRange(2, 2, occasional.length, 1).setBackground("#fff2cc"); // yellow
-  if (rareNew.length > 0)
-    summarySheet.getRange(2, 3, rareNew.length, 1).setBackground("#f4cccc"); // red
-
+  // Auto resize columns
+  summarySheet.autoResizeColumns(1, 3);
   SpreadsheetApp.flush();
 }
