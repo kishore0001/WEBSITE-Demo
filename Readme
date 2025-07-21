@@ -27,23 +27,34 @@ function categorizeRulesProfessional() {
 
   const frequent = [], occasional = [], rareNew = [];
 
+  // 🚀 Updated Categorization Logic
   for (let rule in ruleMap) {
     const w1 = ruleMap[rule].week1;
     const w2 = ruleMap[rule].week2;
+
     if (w1 >= 5 && w2 >= 5) {
       frequent.push({ rule, w1, w2 });
-    } else if (w1 > 0 && w2 > 0) {
+    } else if (
+      (w1 >= 3 && w1 <= 4 || w2 >= 3 && w2 <= 4) &&
+      w1 > 0 && w2 > 0
+    ) {
       occasional.push({ rule, w1, w2 });
-    } else {
+    } else if (w1 <= 2 || w2 <= 2) {
       rareNew.push({ rule, w1, w2 });
     }
   }
 
-  // Set headers with color and styling
+  // 🧾 Set headers
   const headers = ["Frequent", "Occasional", "Rare / New"];
   const headerRange = summarySheet.getRange("A1:C1");
   headerRange.setValues([headers]);
-  headerRange.setFontSize(13).setFontWeight("bold").setHorizontalAlignment("center").setVerticalAlignment("middle").setWrap(true);
+  headerRange
+    .setFontSize(13)
+    .setFontWeight("bold")
+    .setHorizontalAlignment("center")
+    .setVerticalAlignment("middle")
+    .setWrap(true);
+
   summarySheet.getRange("A1").setBackground("#d9ead3");  // light green
   summarySheet.getRange("B1").setBackground("#fff2cc");  // light yellow
   summarySheet.getRange("C1").setBackground("#f4cccc");  // light red
@@ -57,15 +68,15 @@ function categorizeRulesProfessional() {
       if (!entry) return;
       const ruleText = `${entry.rule} (W1: ${entry.w1}, W2: ${entry.w2})`;
       const cell = summarySheet.getRange(row, col);
-      cell.setValue(ruleText);
-      cell.setFontSize(12)
-          .setFontWeight("normal")
-          .setHorizontalAlignment("center")
-          .setVerticalAlignment("middle")
-          .setWrap(true)
-          .setBackground("white");
 
-      // Bold only counts inside the parentheses
+      cell
+        .setFontSize(12)
+        .setFontWeight("normal")
+        .setHorizontalAlignment("center")
+        .setVerticalAlignment("middle")
+        .setWrap(true)
+        .setBackground("white");
+
       const text = SpreadsheetApp.newRichTextValue()
         .setText(ruleText)
         .setTextStyle(0, entry.rule.length, SpreadsheetApp.newTextStyle().setBold(false).build())
